@@ -1016,6 +1016,17 @@
                 <option value="20">20 Books (Full Institutional Universe)</option>
               </select>
             </div>
+            <div style="display: flex; gap: 6px; align-items: center; background: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; padding: 3px 8px;">
+              <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">LEVERAGE:</span>
+              <select id="selectGlobalLeverage" onchange="changeGlobalLeverage(this.value)" style="padding: 2px 6px; font-size: 0.75rem; font-weight: 700; border: none; background: transparent; cursor: pointer; color: var(--accent-primary);">
+                <option value="2" selected>2x (Institutional Safe)</option>
+                <option value="5">5x (Conservative)</option>
+                <option value="10">10x (Balanced Momentum)</option>
+                <option value="25">25x (Velocity Multiplier)</option>
+                <option value="50">50x (Dynamic Aggressive)</option>
+                <option value="100">100x (Max High-Conviction)</option>
+              </select>
+            </div>
             <span class="badge badge-lev50">INSTITUTIONAL 20% HIGH-WATER MARK INCENTIVE</span>
           </div>
         </div>
@@ -1163,7 +1174,10 @@
           <div>
             <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Leverage Tier</label>
             <select id="manualOrderLeverage" style="width: 100%; margin-top: 4px;">
-              <option value="10">10x Leverage (Conservative)</option>
+              <option value="2">2x Leverage (Institutional Safe)</option>
+              <option value="5">5x Leverage (Conservative Growth)</option>
+              <option value="10" selected>10x Leverage (Balanced Momentum)</option>
+              <option value="25">25x Leverage (Velocity Multiplier)</option>
               <option value="50">50x Leverage (Dynamic Velocity)</option>
               <option value="100">100x Leverage (High Conviction)</option>
             </select>
@@ -2318,6 +2332,20 @@
       }
     }
 
+    async function changeGlobalLeverage(val) {
+      try {
+        const res = await fetch('/api/config/leverage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ leverage: parseInt(val) })
+        });
+        const data = await res.json();
+        pollState();
+      } catch (err) {
+        console.error('Error updating global leverage:', err);
+      }
+    }
+
     async function closeAllPositions() {
       if (!confirm('EMERGENCY ACTION: Close all active Buy & Sell positions immediately at market mark price?')) return;
       try {
@@ -2508,6 +2536,10 @@
         const selBooks = document.getElementById('selectMaxBooks');
         if (selBooks && !selBooks.matches(':focus')) {
           selBooks.value = String(fm.max_concurrent_positions);
+        }
+        const selLev = document.getElementById('selectGlobalLeverage');
+        if (selLev && !selLev.matches(':focus') && (s.selected_leverage || fm.selected_leverage)) {
+          selLev.value = String(s.selected_leverage || fm.selected_leverage);
         }
       }
 

@@ -158,6 +158,13 @@ def set_books_capacity():
     res = engine.set_max_concurrent_positions(books)
     return jsonify(res)
 
+@app.route("/api/config/leverage", methods=["POST"])
+def set_leverage_config():
+    data = request.get_json() or {}
+    leverage = int(data.get("leverage", 2))
+    res = engine.set_leverage(leverage)
+    return jsonify(res)
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5055))
     print(f"============================================================")

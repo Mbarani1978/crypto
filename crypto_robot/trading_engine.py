@@ -88,6 +88,7 @@ class TradingEngine:
         self.balance_usdt = 10000.0
         self.cycle_start_balance = 10000.0
         self.max_concurrent_positions = 6
+        self.selected_leverage = 2
         self.active_positions: Dict[str, Dict[str, Any]] = {}
         self.closed_orders: List[Dict[str, Any]] = []
         self.current_hourly_orders: List[Dict[str, Any]] = []
@@ -544,6 +545,19 @@ class TradingEngine:
             )
             return {"status": "success", "max_concurrent_positions": self.max_concurrent_positions}
 
+    def set_leverage(self, leverage: int) -> Dict[str, Any]:
+        with self.lock:
+            valid_leverages = [2, 5, 10, 25, 50, 100]
+            if leverage not in valid_leverages:
+                leverage = min(valid_leverages, key=lambda x: abs(x - leverage))
+            self.selected_leverage = int(leverage)
+            self._log_cognition(
+                "FUND_MANAGER_MANDATE",
+                "LEVERAGE_UPDATED",
+                f"Global Autonomous Trading Leverage updated to {self.selected_leverage}x multiplier."
+            )
+            return {"status": "success", "selected_leverage": self.selected_leverage}
+
     def _execute_preemptive_market_cycle(self):
         # 1. Ingest ALL coins traded against USDT across the entire market (700+ pairs)
         all_usdt_tickers = self.exchange.fetch_all_usdt_tickers()
@@ -652,6 +666,10 @@ class TradingEngine:
                 continue
             if s1_prediction["action"] == "BUY" and existing_buys >= max_skew:
                 continue
+
+            # Apply user-configured global leverage (2x, 5x, 10x, 25x, 50x, 100x)
+            s1_prediction["recommended_leverage"] = self.selected_leverage
+            s1_prediction["leverage_rationale"] = f"Global Mandate ({self.selected_leverage}x)"
 
             # Phase 4 Drawdown Damper: Clamp leverage to 10x if consecutive non-wins occurred
             if self.compounding.leverage_damper_active:
@@ -851,6 +869,7 @@ class TradingEngine:
             "total_fund_manager_payout_usdt": round(self.total_fund_manager_payout_usdt, 2),
             "total_investor_payout_usdt": round(self.total_investor_payout_usdt, 2),
             "max_concurrent_positions": self.max_concurrent_positions,
+            "selected_leverage": self.selected_leverage,
             "max_capital_ceiling_usdt": self.safety_gateway.max_capital_ceiling_usdt,
             "active_positions_count": len(self.active_positions)
         }
@@ -862,6 +881,7 @@ class TradingEngine:
 
         return {
             "is_running": self.is_running,
+            "selected_leverage": self.selected_leverage,
             "uptime_seconds": uptime_seconds,
             "balance_usdt": round(self.balance_usdt, 2),
             "unrealized_pnl_usdt": round(unrealized_total, 2),
