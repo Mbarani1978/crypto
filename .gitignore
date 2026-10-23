@@ -8,3 +8,6 @@ __pycache__/
 logs/
 *.log
 .env
+
+# Allow secured compiled core
+!crypto_robot/rim_brain.pyc
