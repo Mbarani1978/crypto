@@ -559,8 +559,15 @@ class TradingEngine:
         screen_result = self.screener.screen_universe(all_usdt_tickers, ohlcv_dict)
         self.last_screener_result = screen_result
         
-        # Eligible symbols are STRICTLY qualified trades from the Top 50 Vital coins
-        eligible_symbols = screen_result["selected_pairs"]
+        # Eligible symbols: start with Top Vital screener selections, and expand across the Top 50 Vital Universe
+        eligible_symbols = list(screen_result.get("selected_pairs", []))
+        for c in top_50_list:
+            sym = c["symbol"]
+            if sym not in eligible_symbols and sym not in self.active_positions:
+                if c.get("volume_24h_usd", 0) >= 10_000_000 and c.get("spread_pct", 1.0) <= 0.055:
+                    eligible_symbols.append(sym)
+            if len(eligible_symbols) >= max(35, self.max_concurrent_positions * 2):
+                break
 
         # System 7: Continual Learner re-ranks eligible symbols by historical win rates
         eligible_symbols.sort(key=lambda s: self.sys7.get_pair_weight(s), reverse=True)
