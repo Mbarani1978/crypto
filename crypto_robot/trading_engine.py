@@ -527,7 +527,7 @@ class TradingEngine:
 
     def set_max_concurrent_positions(self, num: int) -> Dict[str, Any]:
         with self.lock:
-            num = max(1, min(12, int(num)))
+            num = max(1, min(25, int(num)))
             self.max_concurrent_positions = num
             self._log_cognition(
                 "FUND_MANAGER_MANDATE",
@@ -548,7 +548,7 @@ class TradingEngine:
         # 2. Pre-screen market universe to isolate the TOP 50 MOST VITAL COINS
         initial_screen = self.screener.screen_universe(all_usdt_tickers)
         top_50_list = initial_screen.get("top_50_coins", [])
-        top_candidates = [c["symbol"] for c in top_50_list[:30]]
+        top_candidates = [c["symbol"] for c in top_50_list[:40]]
 
         # 3. Fetch live 1-minute OHLCV candles for the leading Top Vital candidates
         ohlcv_dict = {}
