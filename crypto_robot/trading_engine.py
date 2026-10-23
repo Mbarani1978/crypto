@@ -65,7 +65,7 @@ class TradingEngine:
         # The 4 Strategic Roadmap Engines
         self.benchmark = BenchmarkEngine(target_cycles=1000)
         self.stress_tester = StressTestEngine()
-        self.safety_gateway = LiveSafetyGateway(max_capital_ceiling_usdt=3500.0)
+        self.safety_gateway = LiveSafetyGateway(max_capital_ceiling_usdt=6500.0)
         self.compounding = CompoundingEngine(kelly_fraction=0.35)
 
         # Operational Components & Low-Latency Acceleration
@@ -529,10 +529,18 @@ class TradingEngine:
         with self.lock:
             num = max(1, min(25, int(num)))
             self.max_concurrent_positions = num
+            if num >= 15:
+                self.sys1.min_confidence_to_trade = 0.58
+                self.safety_gateway.set_capital_ceiling(max(6500.0, num * 300.0))
+            elif num >= 10:
+                self.sys1.min_confidence_to_trade = 0.62
+                self.safety_gateway.set_capital_ceiling(max(4500.0, num * 300.0))
+            else:
+                self.sys1.min_confidence_to_trade = 0.68
             self._log_cognition(
                 "FUND_MANAGER_MANDATE",
                 "BOOK_CAPACITY_UPDATED",
-                f"Autonomous Fund Manager concurrent live books capacity updated to {num} books."
+                f"Autonomous Fund Manager concurrent live books capacity updated to {num} books (Confidence Hurdle: {self.sys1.min_confidence_to_trade:.2f} | Ceiling: ${self.safety_gateway.max_capital_ceiling_usdt:,.0f})."
             )
             return {"status": "success", "max_concurrent_positions": self.max_concurrent_positions}
 
