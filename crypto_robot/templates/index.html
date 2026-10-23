@@ -1,0 +1,3398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RIM Cognitive Crypto Trading Robot | 24x7 Autonomous Terminal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* =========================================================
+       LIGHT COLOR THEME SPECIFICATIONS (INSTITUTIONAL GRADE)
+       ========================================================= */
+    :root {
+      --bg-canvas: #f8fafc;
+      --panel-bg: #ffffff;
+      --card-sub-bg: #f8fafc;
+      --border-color: #e2e8f0;
+      --border-strong: #cbd5e1;
+      
+      --text-main: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+      
+      --accent-primary: #0284c7;
+      --accent-hover: #0369a1;
+      --profit-green: #16a34a;
+      --loss-red: #dc2626;
+      --warning-amber: #d97706;
+      --violet-purple: #7c3aed;
+      
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.04) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(124, 58, 237, 0.04) 0px, transparent 50%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Bar */
+    header {
+      background: var(--panel-bg);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-top {
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+    }
+
+    .header-nav-bar {
+      padding: 6px 24px;
+      display: flex;
+      align-items: center;
+      background: #f8fafc;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, #0284c7, #7c3aed);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+      font-size: 0.95rem;
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.3px;
+    }
+
+    .brand-subtitle {
+      font-size: 0.72rem;
+      color: var(--accent-primary);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* Center Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      background: #e2e8f0;
+      padding: 3px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      overflow-x: auto;
+      max-width: 100%;
+      scrollbar-width: none;
+    }
+    .nav-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      padding: 7px 16px;
+      border-radius: 6px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--accent-primary);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      font-weight: 700;
+    }
+
+    /* Master On/Off Switch */
+    .master-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+
+    .bot-status-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #94a3b8;
+    }
+
+    .status-dot.active {
+      background: var(--profit-green);
+      box-shadow: 0 0 10px rgba(22, 163, 74, 0.6);
+      animation: pulse-dot 1.8s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .btn-power {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 20px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      color: #fff;
+    }
+
+    .btn-power.btn-off {
+      background: linear-gradient(135deg, #16a34a, #15803d);
+      box-shadow: 0 2px 8px rgba(22, 163, 74, 0.3);
+    }
+
+    .btn-power.btn-off:hover {
+      box-shadow: 0 4px 14px rgba(22, 163, 74, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .btn-power.btn-on {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+    }
+
+    .btn-power.btn-on:hover {
+      box-shadow: 0 4px 14px rgba(220, 38, 38, 0.45);
+      transform: translateY(-1px);
+    }
+
+    /* Main Container */
+    main {
+      padding: 20px 28px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Top Stats Bar */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+    }
+
+    .metric-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .metric-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .metric-value {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .metric-value.profit {
+      color: var(--profit-green);
+    }
+
+    .metric-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* World Peak Timezones Banner */
+    .world-sessions-panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 16px 18px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sessions-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .sessions-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sessions-regime-badge {
+      background: #f3e8ff;
+      border: 1px solid #e9d5ff;
+      color: #7e22ce;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    .sessions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      gap: 10px;
+    }
+
+    .session-badge {
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .session-badge.active {
+      border-color: #86efac;
+      background: #f0fdf4;
+      box-shadow: 0 1px 3px rgba(22, 163, 74, 0.1);
+    }
+
+    .session-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-main);
+    }
+
+    .session-status {
+      font-size: 0.65rem;
+      font-weight: 800;
+    }
+
+    .session-badge.active .session-status {
+      color: var(--profit-green);
+    }
+
+    .session-badge:not(.active) .session-status {
+      color: var(--text-muted);
+    }
+
+    .session-hours {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    /* Tab Content Layouts */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Terminal Split Screen */
+    .terminal-split {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 1024px) {
+      .terminal-split {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    th {
+      text-align: left;
+      padding: 10px 14px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-color);
+      background: #f8fafc;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 11px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      color: var(--text-secondary);
+    }
+
+    tr:hover {
+      background: #f8fafc;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .badge-buy {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+
+    .badge-sell {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+
+    .badge-lev10 {
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    .badge-lev50 {
+      background: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+
+    .badge-lev100 {
+      background: #ede9fe;
+      color: #6d28d9;
+      border: 1px solid #ddd6fe;
+    }
+
+    .badge-enter {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+
+    .badge-leave {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+    }
+
+    .badge-monitoring {
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    /* Live Cognitive Log Stream */
+    .cognitive-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .log-item {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-left: 3px solid #94a3b8;
+      padding: 9px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      color: var(--text-secondary);
+    }
+
+    .log-item.S1_SCREENER, .log-item.S1_PREDICTION {
+      border-left-color: var(--accent-primary);
+      background: #f0f9ff;
+    }
+
+    .log-item.S2_DETERMINISTIC, .log-item.ORDER_EXECUTED {
+      border-left-color: var(--profit-green);
+      background: #f0fdf4;
+    }
+
+    .log-item.S3_AUTOCORRECTION, .log-item.S3_EXCEPTION_REPAIR {
+      border-left-color: var(--violet-purple);
+      background: #faf5ff;
+    }
+
+    .log-item.ORDER_CLOSED, .log-item.S9_MERKLE_SEAL {
+      border-left-color: var(--warning-amber);
+      background: #fffbeb;
+    }
+
+    .log-header {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 0.68rem;
+    }
+
+    .log-tag {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* Reports & Guides */
+    .report-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .report-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .guide-step {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+
+    .guide-num {
+      width: 24px;
+      height: 24px;
+      background: #e0f2fe;
+      color: var(--accent-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+      font-size: 0.75rem;
+    }
+
+    .btn-action {
+      background: #0284c7;
+      color: #ffffff;
+      border: 1px solid #0369a1;
+      padding: 7px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(2, 132, 199, 0.2);
+    }
+
+    .btn-action:hover {
+      background: #0369a1;
+    }
+
+    .security-notice {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.82rem;
+      color: #991b1b;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    input, select {
+      background: #ffffff;
+      border: 1px solid var(--border-strong);
+      color: var(--text-main);
+      border-radius: 6px;
+      padding: 9px 12px;
+      font-size: 0.82rem;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+    }
+
+    /* Modal Backdrop & Dialog */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-backdrop.show {
+      display: flex;
+    }
+    .modal-box {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 440px;
+      width: 90%;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      border: 1px solid var(--border-color);
+      animation: modalFadeIn 0.2s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header>
+    <div class="header-top">
+      <div class="brand">
+        <div class="brand-logo">RIM</div>
+        <div>
+          <div class="brand-title">AUTONOMOUS CRYPTO ROBOT</div>
+          <div class="brand-subtitle">RIM v9.1 Full 9-System Core • 24x7 Continuous Execution</div>
+        </div>
+      </div>
+
+      <!-- Master Switch & Real-time Live Shields -->
+      <div class="master-control">
+        <!-- 8-Hour Funding Rate Countdown Pill -->
+        <div id="fundingPill" class="bot-status-pill" style="border-color: #cbd5e1; background: #ffffff;" title="8-Hour Perpetual Futures Funding Rate Window (00:00, 08:00, 16:00 UTC)">
+          <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-primary);"></i>
+          <span id="fundingCountdown">8h Funding: --:--:--</span>
+        </div>
+
+        <!-- Persistent Microsecond WebSocket Streamer Pill -->
+        <div id="wsPill" class="bot-status-pill" style="border-color: #bbf7d0; background: #f0fdf4; color: #16a34a;" title="Persistent Microsecond WebSocket Feed (wss://stream.binance.com)">
+          <i class="fa-solid fa-bolt"></i>
+          <span id="wsStatusText">WS PUSH: CONNECTED</span>
+        </div>
+
+        <div class="bot-status-pill">
+          <div class="status-dot" id="statusDot"></div>
+          <span id="statusText">SYSTEM OFFLINE</span>
+        </div>
+        <button id="powerBtn" class="btn-power btn-off" onclick="triggerPinProtectedPower()">
+          <i class="fa-solid fa-power-off"></i>
+          <span id="powerBtnText">TURN BOT ON</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Center Navigation Tabs Row -->
+    <div class="header-nav-bar">
+      <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('terminal')">
+          <i class="fa-solid fa-chart-line"></i> Terminal
+        </button>
+        <button class="tab-btn" onclick="switchTab('live-trades')">
+          <i class="fa-solid fa-arrows-up-down"></i> Live Buy & Sell Desk
+        </button>
+        <button class="tab-btn" onclick="switchTab('screener')">
+          <i class="fa-solid fa-fire"></i> Top 50 Vital Coins
+        </button>
+        <button class="tab-btn" onclick="switchTab('reports')">
+          <i class="fa-solid fa-file-invoice-dollar"></i> 1-Hour Reports
+        </button>
+        <button class="tab-btn" onclick="switchTab('exchange')">
+          <i class="fa-solid fa-plug"></i> Exchange API Setup
+        </button>
+        <button class="tab-btn" onclick="switchTab('phases')">
+          <i class="fa-solid fa-shield-halved"></i> 4-Phase Roadmap
+        </button>
+        <button class="tab-btn" onclick="switchTab('capitol')">
+          <i class="fa-solid fa-landmark-flag"></i> Capitol Alpha (Politics)
+        </button>
+        <button class="tab-btn" onclick="switchTab('options')">
+          <i class="fa-solid fa-arrows-split-up-and-left"></i> Crypto Options (Calls & Puts)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Top Financial & Telemetry Metrics -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">
+          <span>PORTFOLIO BALANCE</span>
+          <i class="fa-solid fa-wallet" style="color: var(--accent-primary)"></i>
+        </div>
+        <div class="metric-value" id="valBalance">$10,000.00</div>
+        <div class="metric-sub">Base Currency: USDT</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">
+          <span>TOTAL EQUITY</span>
+          <i class="fa-solid fa-chart-pie" style="color: var(--profit-green)"></i>
+        </div>
+        <div class="metric-value" id="valEquity">$10,000.00</div>
+        <div class="metric-sub" id="valUnrealized">Unrealized PnL: $0.00</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">
+          <span>NET REALIZED PnL</span>
+          <i class="fa-solid fa-hand-holding-dollar" style="color: var(--warning-amber)"></i>
+        </div>
+        <div class="metric-value profit" id="valNetPnl">+$0.00</div>
+        <div class="metric-sub" id="valWinRate">Win Rate: 100%</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">
+          <span>MINIMAL-LOSS PROTECTION</span>
+          <i class="fa-solid fa-shield-halved" style="color: var(--profit-green)"></i>
+        </div>
+        <div class="metric-value" style="font-size: 1.05rem; color: var(--profit-green);">
+          ACTIVE (0.15% Breakeven)
+        </div>
+        <div class="metric-sub" id="valS3Corrections">S3 Auto-Corrections: 0</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">
+          <span>EXECUTION SPEED & REGIME</span>
+          <i class="fa-solid fa-bolt" style="color: var(--warning-amber)"></i>
+        </div>
+        <div class="metric-value" style="font-size: 1.05rem; color: var(--text-main);">
+          1-Min Pre-Emptive
+        </div>
+        <div class="metric-sub" id="valUptime">Uptime: 00:00:00</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">
+          <span>LATENCY & COLOCATION</span>
+          <i class="fa-solid fa-gauge-high" style="color: var(--profit-green)"></i>
+        </div>
+        <div class="metric-value profit" id="valLatencyDisplay">1.45 ms (-98.9%)</div>
+        <div class="metric-sub" id="valSocketTuningText">TCP_NODELAY + Pre-Warmed WS</div>
+      </div>
+    </div>
+
+    <!-- Ultra-Low Latency Architecture & Kernel Acceleration Strip -->
+    <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 18px; box-shadow: var(--shadow-sm); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 4px;">
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: #dcfce7; color: var(--profit-green); display: flex; align-items: center; justify-content: center; font-size: 0.95rem;">
+          <i class="fa-solid fa-bolt-lightning"></i>
+        </div>
+        <div>
+          <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-main);">
+            ULTRA-LOW LATENCY PIPELINE ACTIVE (<span id="bannerTimeReduced" style="color: var(--profit-green);">98.9% TIME ELIMINATED</span>)
+          </div>
+          <div style="font-size: 0.72rem; color: var(--text-muted);" id="bannerColocationRegion">
+            AWS Tokyo (ap-northeast-1) / Singapore (ap-southeast-1) Colocation • Zero-Copy Socket Engine
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 16px; font-size: 0.75rem; align-items: center;">
+        <div>Decision: <strong id="valInternalDecisionUs" style="color: var(--accent-primary);">42.5 µs</strong></div>
+        <div style="color: var(--border-strong);">|</div>
+        <div>Wire Dispatch: <strong id="valWireDispatchUs" style="color: var(--violet-purple);">58.0 µs</strong></div>
+        <div style="color: var(--border-strong);">|</div>
+        <div>Exchange Ack: <strong id="valExchangeAckMs" style="color: var(--profit-green);">1.45 ms</strong></div>
+        <div style="color: var(--border-strong);">|</div>
+        <span class="badge badge-enter" style="font-size: 0.7rem;">TCP_NODELAY ENGAGED</span>
+      </div>
+    </div>
+
+    <!-- World Market Peak Timezones Tracker -->
+    <div class="world-sessions-panel">
+      <div class="sessions-header">
+        <div class="sessions-title">
+          <i class="fa-solid fa-globe" style="color: var(--accent-primary)"></i>
+          <span>WORLD PEAK TIMEZONES & LIQUIDITY MATRIX</span>
+        </div>
+        <div class="sessions-regime-badge" id="sessionsRegime">
+          Scanning Global Liquidity Clocks...
+        </div>
+      </div>
+      <div class="sessions-grid" id="sessionsGrid">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+
+    <!-- TAB 1: TERMINAL VIEW -->
+    <div id="tab-terminal" class="tab-content active">
+      <div class="terminal-split">
+        
+        <!-- Left: Active Positions & Recent Orders -->
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <!-- Candlestick Visualizer Card -->
+          <div class="card">
+            <div class="card-header" style="padding-bottom: 8px;">
+              <div class="card-title">
+                <i class="fa-solid fa-chart-simple" style="color: var(--accent-primary)"></i>
+                <span>1-MINUTE LIVE OHLCV CANDLESTICK VISUALIZER</span>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <select id="chartSymbolSelect" style="padding: 4px 8px; font-size: 0.75rem;" onchange="loadCandleChart()">
+                  <option value="BTC/USDT">BTC/USDT</option>
+                  <option value="ETH/USDT">ETH/USDT</option>
+                  <option value="SOL/USDT">SOL/USDT</option>
+                  <option value="BNB/USDT">BNB/USDT</option>
+                  <option value="DOGE/USDT">DOGE/USDT</option>
+                </select>
+                <span class="badge badge-enter" id="chartStatusBadge">1m Live Candles</span>
+              </div>
+            </div>
+            <div style="position: relative; width: 100%; height: 210px; background: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; padding: 4px; box-sizing: border-box;">
+              <canvas id="candleCanvas" style="width: 100%; height: 100%; display: block;"></canvas>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; padding: 0 4px;">
+              <div>Green = Up Candle | Red = Down Candle | Lower Bars = Relative Volume</div>
+              <div id="chartPriceSummary" style="font-weight: 700; color: var(--text-main);">Loading live candles...</div>
+            </div>
+          </div>
+
+          <!-- Active Positions Card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-layer-group" style="color: var(--accent-primary)"></i>
+                <span>ACTIVE LEVERAGED POSITIONS (10x, 50x, 100x)</span>
+              </div>
+              <span class="badge badge-lev50" id="activeCountBadge">0 OPEN</span>
+            </div>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Pair</th>
+                    <th>Side</th>
+                    <th>Leverage</th>
+                    <th>Entry Price</th>
+                    <th>Mark Price</th>
+                    <th>Trailing / BE Stop</th>
+                    <th>Margin (USDT)</th>
+                    <th>PnL (Leveraged)</th>
+                    <th>S3 Protection Status</th>
+                  </tr>
+                </thead>
+                <tbody id="activePositionsTable">
+                  <tr>
+                    <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 24px;">
+                      No active positions open. Bot evaluates screened USDT pairs 1-min pre-emptively.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Closed Orders History Card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-clock-rotate-left" style="color: var(--profit-green)"></i>
+                <span>RECENT REALIZED EXECUTIONS & FORENSIC AUDIT</span>
+              </div>
+              <span style="font-size: 0.72rem; color: var(--text-muted)">Live Streamed</span>
+            </div>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Pair</th>
+                    <th>Side</th>
+                    <th>Leverage</th>
+                    <th>Entry</th>
+                    <th>Exit</th>
+                    <th>Price Δ</th>
+                    <th>Net Profit (USDT)</th>
+                    <th>ROI</th>
+                    <th>S9 Merkle Seal</th>
+                  </tr>
+                </thead>
+                <tbody id="closedOrdersTable">
+                  <tr>
+                    <td colspan="10" style="text-align: center; color: var(--text-muted); padding: 18px;">
+                      Awaiting initial cycle executions.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: RIM Cognitive Brain Live Stream -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fa-solid fa-brain" style="color: var(--violet-purple)"></i>
+              <span>RIM BRAIN COGNITIVE TELEMETRY</span>
+            </div>
+            <span style="font-size: 0.7rem; color: var(--accent-primary);">S1 to S9 Coordinated Flow</span>
+          </div>
+          <div class="cognitive-stream" id="cognitiveStream">
+            <div class="log-item">
+              <div class="log-header">
+                <span class="log-tag">SYSTEM_READY</span>
+                <span>Initialized</span>
+              </div>
+              <div>RIM v9.1 Full 9-System Architecture online. Ready for autonomous 24x7 trade cycles.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: LIVE BUY & SELL TRADING DESK (TABULAR BLOTTER) -->
+    <div id="tab-live-trades" class="tab-content">
+
+      <!-- AI Fund Manager Autonomous Capital Allocation & Performance Desk -->
+      <div class="card" style="border-left: 4px solid var(--accent-primary); background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%); margin-bottom: 14px;">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-briefcase" style="color: var(--accent-primary);"></i>
+            <span>RIM v9.1 AUTONOMOUS AI FUND MANAGER & CAPITAL ALLOCATION DESK</span>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <div style="display: flex; gap: 6px; align-items: center; background: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; padding: 3px 8px;">
+              <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">CAPACITY:</span>
+              <select id="selectMaxBooks" onchange="changeMaxBooksCapacity(this.value)" style="padding: 2px 6px; font-size: 0.75rem; font-weight: 700; border: none; background: transparent; cursor: pointer;">
+                <option value="2">2 Books (Concentrated)</option>
+                <option value="4">4 Books (Moderate)</option>
+                <option value="6" selected>6 Books (Option A: Balanced Fund)</option>
+                <option value="8">8 Books (High-Velocity Desk)</option>
+              </select>
+            </div>
+            <span class="badge badge-lev50">INSTITUTIONAL 20% HIGH-WATER MARK INCENTIVE</span>
+          </div>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 14px; line-height: 1.45;">
+          Operating under <strong>Option A (Balanced Institutional Fund Desk)</strong>: The autonomous RIM v9.1 core continuously evaluates risk-adjusted alpha across the Top 50 Vital Universe, dynamically allocating <strong>3%–5% margin per trade ($300–$500 per book on a $10,000 fund)</strong> across up to <strong>6 concurrent live books</strong> (deploying 20%–30% of total fund AUM to the highest-ranking Vital Coins), strictly bounds capital risk via System 2 mathematical stop-loss containment, and automatically tracks institutional <strong>20% performance fee compensation</strong> above the portfolio High-Water Mark.
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px;">
+          <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; box-shadow: var(--shadow-sm);">
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">TOTAL FUND AUM (EQUITY)</div>
+            <div id="fmFundAum" style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin-top: 4px;">$10,000.00</div>
+            <div id="fmCashReserve" style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">Cash Reserve: $10,000.00</div>
+          </div>
+          <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; box-shadow: var(--shadow-sm);">
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">ACTIVE CAPITAL DEPLOYED</div>
+            <div id="fmDeployedMargin" style="font-size: 1.35rem; font-weight: 800; color: var(--accent-primary); margin-top: 4px;">$0.00</div>
+            <div id="fmDeploymentPct" style="font-size: 0.72rem; color: var(--accent-primary); margin-top: 2px;">0.0% Deployed • 0/6 Books Active</div>
+          </div>
+          <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; box-shadow: var(--shadow-sm);">
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">HIGH-WATER MARK (HWM)</div>
+            <div id="fmHighWaterMark" style="font-size: 1.35rem; font-weight: 800; color: var(--violet-purple); margin-top: 4px;">$10,000.00</div>
+            <div style="font-size: 0.72rem; color: var(--violet-purple); margin-top: 2px;">Zero-Fee Drawdown Defense</div>
+          </div>
+          <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; box-shadow: var(--shadow-sm);">
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">AI FUND MANAGER PAYOUT (20%)</div>
+            <div id="fmManagerPayout" style="font-size: 1.35rem; font-weight: 800; color: var(--profit-green); margin-top: 4px;">+$0.00</div>
+            <div id="fmInvestorShare" style="font-size: 0.72rem; color: var(--profit-green); margin-top: 2px;">Investor Net Share (80%): +$0.00</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Top Live Blotter Metrics Grid -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">
+            <span>ACTIVE BUY (LONG) TRADES</span>
+            <i class="fa-solid fa-arrow-trend-up" style="color: var(--profit-green);"></i>
+          </div>
+          <div class="metric-value profit" id="deskActiveBuysCount">0 BUYS</div>
+          <div class="metric-sub" id="deskActiveBuysMargin">Allocated: $0.00 USDT</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">
+            <span>ACTIVE SELL (SHORT) TRADES</span>
+            <i class="fa-solid fa-arrow-trend-down" style="color: var(--loss-red);"></i>
+          </div>
+          <div class="metric-value" style="color: var(--loss-red);" id="deskActiveSellsCount">0 SELLS</div>
+          <div class="metric-sub" id="deskActiveSellsMargin">Allocated: $0.00 USDT</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">
+            <span>TOTAL UNREALIZED PnL</span>
+            <i class="fa-solid fa-chart-line" style="color: var(--accent-primary);"></i>
+          </div>
+          <div class="metric-value" id="deskUnrealizedPnl">$0.00</div>
+          <div class="metric-sub">Real-Time Floating Equity</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">
+            <span>S3 ZERO-LOSS RATCHET</span>
+            <i class="fa-solid fa-shield-halved" style="color: var(--violet-purple);"></i>
+          </div>
+          <div class="metric-value" id="deskS3ProtectedCount" style="color: var(--violet-purple);">0 LOCKED</div>
+          <div class="metric-sub">+0.06% Breakeven Guarantee</div>
+        </div>
+      </div>
+
+      <!-- Live Active Buy & Sell Orders Blotter Table -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">
+              <i class="fa-solid fa-list-check" style="color: var(--profit-green);"></i>
+              <span>LIVE ACTIVE BUY & SELL POSITIONS (REAL-TIME TABULAR BLOTTER)</span>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">
+              Full-width tabular view of all live long/short contracts streaming tick-by-tick prices, auto-breakeven stops, and real-time PnL.
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <span class="badge badge-enter" id="deskOpenBadge">0 OPEN POSITIONS</span>
+            <button class="btn-action" style="background: #fee2e2; color: #dc2626; border-color: #fecaca; font-size: 0.75rem;" onclick="closeAllPositions()">
+              <i class="fa-solid fa-triangle-exclamation"></i> Panic Close All
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Entry Time</th>
+                <th>Pair</th>
+                <th>Action</th>
+                <th>Leverage</th>
+                <th>Entry Price</th>
+                <th>Mark Price (Live)</th>
+                <th>Allocated Margin</th>
+                <th>Position Size</th>
+                <th>Take Profit</th>
+                <th>Stop / S3 Breakeven</th>
+                <th>Unrealized PnL</th>
+                <th>S3 Protection Status</th>
+                <th style="text-align: center;">Emergency Action</th>
+              </tr>
+            </thead>
+            <tbody id="liveDeskPositionsTable">
+              <tr>
+                <td colspan="13" style="text-align: center; color: var(--text-muted); padding: 28px;">
+                  No active Buy or Sell trades currently open. Bot evaluates 1-minute pre-emptive candles continuously.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- One-Click Instant Buy & Sell Order Execution Desk -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-bolt" style="color: var(--warning-amber);"></i>
+            <span>ONE-CLICK INSTANT BUY & SELL ORDER DESK</span>
+          </div>
+          <span class="badge badge-lev50">DIRECT DISPATCH</span>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">
+          Fire instantaneous market orders directly into the execution engine to test live buy/sell tracking.
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 8px; align-items: flex-end;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Crypto Pair</label>
+            <select id="manualOrderSymbol" style="width: 100%; margin-top: 4px;">
+              <option value="BTC/USDT">BTC/USDT (Bitcoin)</option>
+              <option value="ETH/USDT">ETH/USDT (Ethereum)</option>
+              <option value="SOL/USDT">SOL/USDT (Solana)</option>
+              <option value="BNB/USDT">BNB/USDT (Binance Coin)</option>
+              <option value="DOGE/USDT">DOGE/USDT (Dogecoin)</option>
+              <option value="PEPE/USDT">PEPE/USDT (Pepe)</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Leverage Tier</label>
+            <select id="manualOrderLeverage" style="width: 100%; margin-top: 4px;">
+              <option value="10">10x Leverage (Conservative)</option>
+              <option value="50">50x Leverage (Dynamic Velocity)</option>
+              <option value="100">100x Leverage (High Conviction)</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Margin (USDT)</label>
+            <input type="number" id="manualOrderMargin" value="300" min="10" max="3000" style="width: 100%; margin-top: 4px;">
+          </div>
+
+          <div style="display: flex; gap: 8px;">
+            <button class="btn-action" style="background: #16a34a; border-color: #15803d; flex: 1; padding: 10px;" onclick="dispatchManualOrder('BUY')">
+              <i class="fa-solid fa-arrow-trend-up"></i> BUY (LONG)
+            </button>
+            <button class="btn-action" style="background: #dc2626; border-color: #b91c1c; flex: 1; padding: 10px;" onclick="dispatchManualOrder('SELL')">
+              <i class="fa-solid fa-arrow-trend-down"></i> SELL (SHORT)
+            </button>
+          </div>
+        </div>
+        <div id="manualOrderFeedback" style="display: none; margin-top: 10px; font-size: 0.78rem; font-weight: 600; padding: 8px 12px; border-radius: 6px;"></div>
+      </div>
+
+      <!-- Historical Realized Buy & Sell Executions Table -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-primary);"></i>
+            <span>REALIZED BUY & SELL EXECUTIONS (FORENSIC AUDIT BLOTTER)</span>
+          </div>
+          <span style="font-size: 0.72rem; color: var(--text-muted);">Real-Time Merkle Sealed</span>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Close Time</th>
+                <th>Pair</th>
+                <th>Action</th>
+                <th>Leverage</th>
+                <th>Entry Price</th>
+                <th>Exit Price</th>
+                <th>Price Δ %</th>
+                <th>Allocated Margin</th>
+                <th>Gross PnL</th>
+                <th>Exchange Fee</th>
+                <th>Net Profit (USDT)</th>
+                <th>ROI %</th>
+                <th>Exit Reason</th>
+                <th>S9 Merkle Seal</th>
+              </tr>
+            </thead>
+            <tbody id="liveDeskClosedTable">
+              <tr>
+                <td colspan="14" style="text-align: center; color: var(--text-muted); padding: 24px;">
+                  Awaiting closed trade realizations.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 3: TOP 50 VITAL COINS MARKET MONITOR -->
+    <div id="tab-screener" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">
+              <i class="fa-solid fa-fire" style="color: var(--warning-amber)"></i>
+              <span>TOP 50 VITAL COINS ENGINE: TRACKED, ANALYZED & TRADED EVERY MINUTE</span>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">
+              Ingests <strong id="screenerTotalCount">700+ Pairs</strong>, isolates the <strong style="color: var(--accent-primary);">Top 50 Most Vital Coins</strong> by liquidity & vitality score, and evaluates 1-minute trades with RIM v9.1 Confluence.
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <span class="badge badge-lev50" id="screenerTop50Badge">50 VITAL COINS</span>
+            <span class="badge badge-enter" id="screenerEnteredBadge">0 ENTERED</span>
+            <span class="badge badge-monitoring" id="screenerMonitoringBadge">0 MONITORING</span>
+            <span class="badge badge-leave" id="screenerLeftOutBadge">0 EXCLUDED</span>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 6px 0 10px 0; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <input type="text" id="screenerSearchInput" placeholder="🔍 Search Top 50 Vital coins (e.g., BTC, SOL, PEPE, SUI)..." style="width: 280px;" oninput="filterScreenerTable()">
+            <div class="nav-tabs" style="margin: 0;">
+              <button class="tab-btn active" id="btnFilterTop50" style="padding: 4px 10px; font-size: 0.75rem;" onclick="setScreenerStatusFilter('TOP_50')">Top 50 Vital (Recommended)</button>
+              <button class="tab-btn" id="btnFilterEnter" style="padding: 4px 10px; font-size: 0.75rem;" onclick="setScreenerStatusFilter('ENTER')">Entered Trades</button>
+              <button class="tab-btn" id="btnFilterMonitoring" style="padding: 4px 10px; font-size: 0.75rem;" onclick="setScreenerStatusFilter('MONITORING')">Monitoring (1-Min)</button>
+              <button class="tab-btn" id="btnFilterAll" style="padding: 4px 10px; font-size: 0.75rem;" onclick="setScreenerStatusFilter('ALL')">All Screened Pairs</button>
+            </div>
+          </div>
+          <span style="font-size: 0.72rem; color: var(--text-muted);">Cycle: <strong>Every 60s</strong> | Thresholds: Vol &ge; $15M | Spread &le; 0.038% | Chop &le; 65</span>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Coin Pair</th>
+                <th>1-Min Decision</th>
+                <th>Vitality Score</th>
+                <th>Last Price</th>
+                <th>24h Volume (USDT)</th>
+                <th>Spread %</th>
+                <th>Trend Clarity</th>
+                <th>Chop Index</th>
+                <th>1-Min Analysis Rationale</th>
+              </tr>
+            </thead>
+            <tbody id="screenerTable">
+              <tr>
+                <td colspan="10" style="text-align: center; color: var(--text-muted); padding: 24px;">
+                  Scanning and isolating Top 50 Vital Coins against USDT...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: 1-HOUR PERFORMANCE AUDIT REPORTS -->
+    <div id="tab-reports" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-receipt" style="color: var(--accent-primary)"></i>
+            <span>1-HOUR AUTOMATED PERFORMANCE AUDIT REPORTS</span>
+          </div>
+          <button class="btn-action" onclick="triggerHourlyReportNow()">
+            <i class="fa-solid fa-bolt"></i> Compile Current 1-Hour Report Now
+          </button>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">
+          Every 60 minutes, the bot delivers an analysis and order placed report with clear mathematical calculations for each order (entry/exit, 10x/50x/100x leverage, initial margin, fees, gross & net PnL, and ROI %).
+        </p>
+        <div id="reportsContainer">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: EXCHANGE SETUP & API GUIDES -->
+    <div id="tab-exchange" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-key" style="color: var(--warning-amber)"></i>
+            <span>EXCHANGE API CONNECTOR & STEP-BY-STEP SETUP GUIDE</span>
+          </div>
+          <span class="badge badge-lev10" id="currentModeBadge">SIMULATION MODE ACTIVE</span>
+        </div>
+
+        <!-- Strict Security Callout -->
+        <div class="security-notice">
+          <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.3rem;"></i>
+          <div>
+            <strong>CRITICAL SECURITY PROTOCOL:</strong>
+            When generating API keys on any exchange, <strong>NEVER enable "Withdrawals"</strong>. Only enable <strong>"Read-Only"</strong> and <strong>"Trading" (Spot & Futures)</strong>. This guarantees your funds can never be withdrawn by the bot. Use IP Whitelisting for maximum safety.
+          </div>
+        </div>
+
+        <!-- Config Form -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 10px;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Select Exchange</label>
+            <select id="cfgExchange" style="width: 100%; margin-top: 4px;" onchange="updateExchangeGuide()">
+              <option value="binance">Binance (USD-M Futures & Spot)</option>
+              <option value="bybit">Bybit (Unified / USDT Perpetual)</option>
+              <option value="okx">OKX (USDT Swap & Margin)</option>
+              <option value="coinbase">Coinbase Advanced Trade</option>
+              <option value="kucoin">KuCoin (Futures & Spot)</option>
+              <option value="deribit">Deribit (Bitcoin & Ethereum Options, Futures)</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Execution Mode</label>
+            <select id="cfgMode" style="width: 100%; margin-top: 4px;">
+              <option value="simulation">Real-Time Simulation (Live Public Feeds - No API keys needed)</option>
+              <option value="live">Live Exchange Trading (Direct Execution via CCXT)</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">API Key</label>
+            <input type="text" id="cfgApiKey" placeholder="Paste Exchange API Key" style="width: 100%; margin-top: 4px;">
+          </div>
+
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">API Secret (Required for Live Trading)</label>
+              <button type="button" onclick="toggleSecretVisibility()" style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.75rem;">
+                <i id="secretEyeIcon" class="fa-solid fa-eye"></i> Show
+              </button>
+            </div>
+            <div style="position: relative; margin-top: 4px;">
+              <input type="password" id="cfgSecret" placeholder="Paste Secret Hash (from Binance API Management)" style="width: 100%;">
+            </div>
+          </div>
+
+          <div id="cfgPassphraseContainer">
+            <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Passphrase (OKX / KuCoin)</label>
+            <input type="password" id="cfgPassphrase" placeholder="Custom API Passphrase" style="width: 100%; margin-top: 4px;">
+          </div>
+        </div>
+
+        <div style="margin-top: 14px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <button class="btn-action" onclick="saveExchangeConfig()">
+            <i class="fa-solid fa-floppy-disk"></i> Apply Exchange Configuration
+          </button>
+          <div id="exchangeFeedbackBox" style="display: none; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 600;"></div>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px; margin-top: 14px; font-size: 0.74rem; color: var(--text-secondary); line-height: 1.5;">
+          <strong>ℹ Understanding Live Data & Modes:</strong><br>
+          • <strong>Real-Time Simulation (Recommended):</strong> Terminal streams authentic <strong>100% live Binance market prices</strong> (BTC, ETH, SOL, Top 50 vital coins) and simulates trades with $10,000 risk-free virtual capital. <em>No API keys required!</em><br>
+          • <strong>Live Exchange Trading:</strong> Places real money orders on your exchange wallet. Requires <strong>BOTH API Key and API Secret</strong> with Futures permission enabled and Withdrawals disabled.
+        </div>
+
+        <!-- Step-by-Step Instructions Container -->
+        <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+          <h3 id="guideTitle" style="font-size: 1rem; color: var(--accent-primary); margin-bottom: 12px; font-weight: 800;">
+            Step-by-Step API Setup Guide
+          </h3>
+          <div id="guideStepsContainer">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Gap 3: Mobile Push Alerting (Telegram & Discord) Card -->
+      <div class="card" style="margin-top: 16px;">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-bell" style="color: var(--accent-primary)"></i>
+            <span>MOBILE PUSH ALERTING & SENTRY NOTIFICATIONS (TELEGRAM & DISCORD)</span>
+          </div>
+          <span class="badge badge-enter" id="notifierActiveBadge">ALERTS READY</span>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+          Receive real-time instant alerts on your smartphone for: trade entries, trailing breakeven ratchets, closed positions with PnL, System 8 Sentry alarms, and certified 1-Hour Merkle performance reports.
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Telegram Bot API Token</label>
+            <input type="password" id="cfgTelegramToken" placeholder="e.g. 123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ" style="width: 100%; margin-top: 4px;">
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Create via @BotFather on Telegram</div>
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Telegram Chat ID</label>
+            <input type="text" id="cfgTelegramChatId" placeholder="e.g. 987654321" style="width: 100%; margin-top: 4px;">
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Get via @userinfobot on Telegram</div>
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Discord Webhook URL (Optional)</label>
+            <input type="password" id="cfgDiscordWebhook" placeholder="https://discord.com/api/webhooks/..." style="width: 100%; margin-top: 4px;">
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Channel Settings -> Integrations -> Webhooks</div>
+          </div>
+        </div>
+        <div style="margin-top: 14px; display: flex; gap: 10px; align-items: center;">
+          <button class="btn-action" onclick="saveNotifierConfig()">
+            <i class="fa-solid fa-floppy-disk"></i> Save Alert Channels
+          </button>
+          <button class="btn-action" style="background: #16a34a; border-color: #15803d;" onclick="sendTestAlertPing()">
+            <i class="fa-solid fa-paper-plane"></i> Send Test Ping to Phone
+          </button>
+          <span id="notifierFeedbackText" style="font-size: 0.75rem; font-weight: 600;"></span>
+        </div>
+      </div>
+
+      <!-- Gap 2: Dashboard PIN Protection & Security Vault Card -->
+      <div class="card" style="margin-top: 16px;">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-vault" style="color: var(--violet-purple)"></i>
+            <span>DASHBOARD PIN SECURITY VAULT & OPERATOR ACCESS CONTROL</span>
+          </div>
+          <span class="badge badge-lev50">SHA-256 SALTED VAULT</span>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+          Guards the Master ON/OFF Switch with a salted cryptographic PIN hash. Default PIN is <strong>8888</strong>. Use this panel to update your custom security code.
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Current Master PIN</label>
+            <input type="password" id="cfgOldPin" placeholder="Current PIN (e.g. 8888)" maxlength="8" style="width: 100%; margin-top: 4px;">
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">New Master PIN</label>
+            <input type="password" id="cfgNewPin" placeholder="New PIN (4-8 digits)" maxlength="8" style="width: 100%; margin-top: 4px;">
+          </div>
+        </div>
+        <div style="margin-top: 14px; display: flex; gap: 10px; align-items: center;">
+          <button class="btn-action" onclick="updateMasterPin()">
+            <i class="fa-solid fa-key"></i> Update Security PIN
+          </button>
+          <span id="vaultFeedbackText" style="font-size: 0.75rem; font-weight: 600;"></span>
+        </div>
+      </div>
+
+      <!-- Gap 4: Perpetual Futures 8-Hour Funding Rate Shield Card -->
+      <div class="card" style="margin-top: 16px;">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-shield-halved" style="color: var(--profit-green)"></i>
+            <span>PERPETUAL FUTURES 8-HOUR FUNDING RATE ARBITRAGE & DRIFT GUARD</span>
+          </div>
+          <span class="badge badge-enter" id="fundingGuardBadge">SYSTEM 2 ACTIVE</span>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+          Exchange perpetual futures settle funding rates every 8 hours (00:00, 08:00, 16:00 UTC). When funding is positive, longs pay shorts; when negative, shorts pay longs. RIM Brain monitors the snapshot clock and automatically vetos entries against the crowd within 10 minutes of snapshot if funding fee exceeds 0.025%.
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 14px;">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Next Funding Snapshot</div>
+            <div id="valNextFundingTime" style="font-size: 1.15rem; font-weight: 800; color: var(--accent-primary);">--:--:-- UTC</div>
+            <div id="valFundingCountdownText" style="font-size: 0.7rem; color: var(--text-muted);">Countdown: --:--:--</div>
+          </div>
+          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 14px;">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Hostile Rate Cutoff</div>
+            <div style="font-size: 1.15rem; font-weight: 800; color: var(--loss-red);">&gt; &plusmn;0.0250%</div>
+            <div style="font-size: 0.7rem; color: var(--profit-green);">Veto Lockout: &lt; 10m to Snapshot</div>
+          </div>
+          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 14px;">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Clock Drift Synchronizer</div>
+            <div style="font-size: 1.15rem; font-weight: 800; color: var(--profit-green);">0.00 ms NTP Drift</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">Binance / Bybit Auto-Sync</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: 4-PHASE STRATEGIC ROADMAP -->
+    <div id="tab-phases" class="tab-content">
+      
+      <!-- Phase 1 Card: 1,000-Cycle Benchmark Tracker -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-flag-checkered" style="color: var(--accent-primary)"></i>
+            <span>PHASE 1: 1,000-CYCLE AUTONOMOUS BENCHMARK & ZERO-DRIFT TRACKER</span>
+          </div>
+          <span class="badge badge-lev10" id="p1CycleBadge">CYCLE 0 / 1,000</span>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">
+          Continuous execution verification across 1,000 1-minute market cycles to statistically validate System 5 balance conservation (target: exactly 0.00000000 drift) and System 3 breakeven locks.
+        </p>
+        
+        <!-- Progress Bar -->
+        <div style="background: #e2e8f0; border-radius: 8px; height: 18px; width: 100%; overflow: hidden; margin: 8px 0;">
+          <div id="p1ProgressBar" style="background: linear-gradient(90deg, var(--accent-primary), var(--profit-green)); height: 100%; width: 0%; transition: width 0.4s ease;"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted);">
+          <span id="p1ProgressText">0.0% Complete (0 / 1,000 Cycles)</span>
+          <span id="p1DriftText">System 5 Balance Drift: 0.00000000</span>
+        </div>
+      </div>
+
+      <!-- Phase 2 Card: Black Swan Stress Test Engine -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-bolt-lightning" style="color: var(--loss-red)"></i>
+            <span>PHASE 2: BLACK SWAN & EXTREME VOLATILITY STRESS TEST SIMULATOR</span>
+          </div>
+          <span class="badge badge-sell">CRASH DEFENSE AUDITOR</span>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">
+          Inject historic flash crash anomalies (e.g., -35% collapse, liquidation wicks, and spread blowouts) into the RIM Brain to prove that System 8 and System 3 bound maximum drawdown strictly to &lt; 2.0%.
+        </p>
+        <div style="display: flex; gap: 12px; align-items: center; margin-top: 6px;">
+          <select id="stressScenarioSelect" style="flex: 1; padding: 10px;">
+            <option value="covid_2020_flash_crash">March 2020 COVID Flash Crash (-35% in 15 mins)</option>
+            <option value="may_2021_liquidation_wick">May 2021 Liquidation Wick (-24% in 2 mins)</option>
+            <option value="ftx_2022_liquidity_freeze">November 2022 FTX Liquidity Freeze (-20%)</option>
+          </select>
+          <button class="btn-action" style="background: #dc2626; border-color: #b91c1c; white-space: nowrap;" onclick="runStressTestNow()">
+            <i class="fa-solid fa-play"></i> Simulate Crash Defense
+          </button>
+        </div>
+
+        <div id="stressResultBox" style="display: none; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; margin-top: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <strong id="stressResultTitle" style="color: var(--profit-green); font-size: 0.85rem;">STRESS TEST PASSED</strong>
+            <span id="stressDrawdownBadge" class="badge badge-buy">Max Drawdown: 0.65%</span>
+          </div>
+          <div id="stressLogLines" style="font-family: monospace; font-size: 0.75rem; color: var(--text-secondary); line-height: 1.6; max-height: 150px; overflow-y: auto;">
+          </div>
+          <div id="stressMerkleCert" style="font-size: 0.7rem; color: var(--text-muted); margin-top: 8px; border-top: 1px dashed var(--border-color); padding-top: 6px;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 3 Card: Micro-Account Live Safety Gateway -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-shield-virus" style="color: var(--warning-amber)"></i>
+            <span>PHASE 3: MICRO-ACCOUNT LIVE SAFETY GATEWAY & SLIPPAGE AUDITOR</span>
+          </div>
+          <span class="badge badge-lev50">CAPITAL CEILING AIR-GAP</span>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">
+          Enforces an unbreakable hard capital ceiling on real exchange accounts. Even if account balance is $5,000+, the bot will NEVER commit more margin than your safety ceiling.
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 8px;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Hard Capital Ceiling (USDT)</label>
+            <div style="display: flex; gap: 8px; margin-top: 4px;">
+              <input type="number" id="cfgCeilingInput" value="100" min="10" max="5000" style="flex: 1;">
+              <button class="btn-action" onclick="saveCapitalCeiling()">Set Ceiling</button>
+            </div>
+          </div>
+          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 14px;">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Committed Live Margin</div>
+            <div id="valCommittedMargin" style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);">$0.00 USDT</div>
+            <div id="valSafetyHeadroom" style="font-size: 0.7rem; color: var(--profit-green);">Headroom Available: $100.00</div>
+          </div>
+          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 14px;">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Average Fill Slippage</div>
+            <div id="valAvgSlippage" style="font-size: 1.15rem; font-weight: 800; color: var(--profit-green);">0.0000%</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">Tolerance: &le; 0.025%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 4 Card: Systematic Compounding & Adaptive Kelly Sizing -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-chart-line-up" style="color: var(--profit-green)"></i>
+            <span>PHASE 4: SYSTEMATIC COMPOUNDING & ADAPTIVE KELLY POSITION SIZING</span>
+          </div>
+          <span class="badge badge-lev100" id="valDamperBadge">NORMAL REGIME</span>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">
+          Calculates dynamic margin using the Fractional Kelly Criterion (35% half-Kelly) based on rolling win rate and payoff ratio ($b$), with an automated Drawdown Damper that throttles leverage after consecutive non-wins.
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 8px;">
+          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 14px;">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Kelly Optimal Allocation</div>
+            <div id="valKellyPct" style="font-size: 1.15rem; font-weight: 800; color: var(--accent-primary);">2.50%</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">Fractional Multiplier: 0.35x</div>
+          </div>
+          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 14px;">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Recommended Margin / Trade</div>
+            <div id="valKellyMargin" style="font-size: 1.15rem; font-weight: 800; color: var(--profit-green);">$250.00 USDT</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">Bounded &le; 8% Portfolio</div>
+          </div>
+          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 14px;">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Payoff Ratio (b)</div>
+            <div id="valPayoffRatio" style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);">1.85</div>
+            <div id="valCompoundingRegime" style="font-size: 0.7rem; color: var(--accent-primary);">Optimal Geometric Compounding</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 6: CAPITOL ALPHA (POLITICAL TRADES TRACKER) -->
+    <div id="tab-capitol" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">
+              <i class="fa-solid fa-landmark-flag" style="color: var(--accent-primary)"></i>
+              <span>CAPITOL ALPHA: CONGRESSIONAL & POLITICAL INSIDER TRACKER</span>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">
+              Ingests US House & Senate disclosures from <strong>CapitolTrades.com</strong> & <strong>UnusualWhales.com</strong> under the STOCK Act. Translates lawmaker stock, option, and direct crypto transactions into macro sentiment tailwinds for the Top 50 Vital crypto coins.
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <span class="badge badge-lev50" id="polMarketRegimeBadge">CONGRESS ACCUMULATION</span>
+            <span class="badge badge-enter" id="polScoreBadge">+78.4 SENTIMENT INDEX</span>
+          </div>
+        </div>
+
+        <!-- KPI Metrics Grid -->
+        <div class="metrics-grid" style="margin-bottom: 16px;">
+          <div class="metric-card">
+            <div class="metric-label">
+              <span>CONGRESSIONAL SENTIMENT INDEX</span>
+              <i class="fa-solid fa-gauge-high" style="color: var(--profit-green)"></i>
+            </div>
+            <div class="metric-value profit" id="valPolSentimentIndex">+78.4 / 100</div>
+            <div class="metric-sub" id="valPolRegimeText">Macro Tailwinds Active</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">
+              <span>TRACKED CONGRESSIONAL FILINGS</span>
+              <i class="fa-solid fa-file-contract" style="color: var(--accent-primary)"></i>
+            </div>
+            <div class="metric-value" id="valPolTotalFilings">8 Disclosures</div>
+            <div class="metric-sub">House & Senate STOCK Act Filings</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">
+              <span>COMMITTEE INFLUENCE WEIGHT</span>
+              <i class="fa-solid fa-gavel" style="color: var(--violet-purple)"></i>
+            </div>
+            <div class="metric-value" id="valPolCommitteeWeight">2.0x Multiplier</div>
+            <div class="metric-sub">Financial Services & Banking Priority</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">
+              <span>ANTI-LAG DECAY FUNCTION</span>
+              <i class="fa-solid fa-clock-rotate-left" style="color: var(--warning-amber)"></i>
+            </div>
+            <div class="metric-value" style="font-size: 1.05rem; color: var(--text-main);">W = e^(-0.045 * &Delta;t)</div>
+            <div class="metric-sub">15-Day Half-Life Decay Guard</div>
+          </div>
+        </div>
+
+        <!-- Asset Spillover Multiplier Grid -->
+        <div style="margin-bottom: 18px;">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
+            <i class="fa-solid fa-network-wired" style="color: var(--accent-primary)"></i>
+            Target Crypto Sentiment Boost Multipliers (System 1 & System 6 Confluence)
+          </div>
+          <div id="cryptoPoliticalMultipliersGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Recent Congressional Disclosures Feed Table -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">
+            <i class="fa-solid fa-list-check" style="color: var(--warning-amber)"></i>
+            Recent Congressional Disclosures (STOCK Act Filings Feed)
+          </div>
+          <div style="font-size: 0.72rem; color: var(--text-muted);">
+            Data Sources: <strong>CapitolTrades.com</strong> & <strong>UnusualWhales.com/politics</strong>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Politician</th>
+                <th>Chamber / Party</th>
+                <th>Regulatory Committee</th>
+                <th>Asset Disclosed</th>
+                <th>Action</th>
+                <th>Amount Range</th>
+                <th>Trade & Filed Dates</th>
+                <th>Filing Lag</th>
+                <th>Crypto Target</th>
+                <th>Alpha Impact</th>
+              </tr>
+            </thead>
+            <tbody id="polDisclosuresTable">
+              <tr>
+                <td colspan="10" style="text-align: center; color: var(--text-muted); padding: 24px;">
+                  Ingesting Congressional disclosures...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: CRYPTO OPTIONS (CALLS & PUTS, GREEKS, DERIBIT RADAR) -->
+    <div id="tab-options" class="tab-content">
+      
+      <!-- Options Educational & Operational Comparison Card -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">
+              <i class="fa-solid fa-arrows-split-up-and-left" style="color: var(--accent-primary)"></i>
+              <span>CRYPTO OPTIONS ENGINE: BUY CALLS (CE), BUY PUTS (PE) & GREEKS</span>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">
+              Empowers the terminal with Deribit & OKX European Vanilla Options, Black-Scholes Greeks, Put/Call Ratio (PCR), and Friday 08:00 UTC Max Pain gravity pins.
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <span class="badge badge-lev50" id="optUnderlyingBadge">BTC/USDT OPTIONS</span>
+            <span class="badge badge-enter" id="optStrategyBadge">BUY CALL (CE) READY</span>
+          </div>
+        </div>
+
+        <!-- 3-Way Architectural Comparison: Spot vs Futures vs Options -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-top: 8px;">
+          <!-- Card 1: Buy Call (CE) -->
+          <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <strong style="color: #15803d; font-size: 0.9rem;"><i class="fa-solid fa-arrow-trend-up"></i> BUY CALL (CE)</strong>
+              <span class="badge badge-buy">Bullish View</span>
+            </div>
+            <p style="font-size: 0.76rem; color: #166534; line-height: 1.4;">
+              Purchased when expecting BTC to rise strongly. Profit grows as spot surpasses <strong>Strike + Premium</strong>. 
+              <strong>Max Risk:</strong> Strictly capped to the premium paid (cannot be liquidated).
+            </p>
+            <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 8px; border-top: 1px dashed #bbf7d0; padding-top: 6px;">
+              Risk: <strong>Theta Decay (Θ)</strong> erodes value if the move is delayed.
+            </div>
+          </div>
+
+          <!-- Card 2: Buy Put (PE) -->
+          <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <strong style="color: #b91c1c; font-size: 0.9rem;"><i class="fa-solid fa-arrow-trend-down"></i> BUY PUT (PE)</strong>
+              <span class="badge badge-sell">Bearish / Hedge</span>
+            </div>
+            <p style="font-size: 0.76rem; color: #991b1b; line-height: 1.4;">
+              Purchased when expecting BTC to drop, or as an insurance hedge on an existing coin portfolio. 
+              <strong>Max Risk:</strong> Strictly capped to the premium paid.
+            </p>
+            <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 8px; border-top: 1px dashed #fecaca; padding-top: 6px;">
+              Downside participation without short margin liquidation hazards.
+            </div>
+          </div>
+
+          <!-- Card 3: RIM Zero-Loss Futures (Our Bot's Core) -->
+          <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <strong style="color: #0369a1; font-size: 0.9rem;"><i class="fa-solid fa-bolt"></i> 1-MIN PRE-EMPTIVE FUTURES</strong>
+              <span class="badge badge-lev10">RIM Core Edge</span>
+            </div>
+            <p style="font-size: 0.76rem; color: #075985; line-height: 1.4;">
+              Deploys 10x-100x long/short with <strong>zero theta time decay</strong>. System 3 elevates stop to <strong>Breakeven (+0.06%)</strong> once price moves +0.12%, giving options-like capped downside with no premium loss.
+            </p>
+            <div style="font-size: 0.7rem; color: var(--accent-primary); margin-top: 8px; border-top: 1px dashed #bae6fd; padding-top: 6px; font-weight: 600;">
+              Zero Time Decay • Sub-second Breakeven Protection
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deribit Market Sentiment & Max Pain Radar -->
+      <div class="card" style="margin-top: 16px;">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-bullseye" style="color: var(--violet-purple)"></i>
+            <span>DERIBIT INSTITUTIONAL SENTIMENT & MAX PAIN GRAVITY RADAR</span>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <select id="optCurrencySelect" style="padding: 4px 10px; font-size: 0.78rem;" onchange="loadOptionsChainData()">
+              <option value="BTC">Bitcoin (BTC) Options</option>
+              <option value="ETH">Ethereum (ETH) Options</option>
+            </select>
+            <span class="badge badge-lev100" id="optPcrStatusBadge">PCR: 0.95 (BALANCED)</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 6px;">
+          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 12px 14px;">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Current Spot Anchor</div>
+            <div id="valOptSpot" style="font-size: 1.25rem; font-weight: 800; color: var(--text-main);">$68,250.00</div>
+            <div style="font-size: 0.7rem; color: var(--accent-primary);">Deribit Index Reference</div>
+          </div>
+
+          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 12px 14px;">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Options Max Pain Strike</div>
+            <div id="valOptMaxPain" style="font-size: 1.25rem; font-weight: 800; color: var(--violet-purple);">$68,000.00</div>
+            <div id="valOptDistPain" style="font-size: 0.7rem; color: var(--profit-green);">Gravity Pull: -0.37% (Toward Pin)</div>
+          </div>
+
+          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 12px 14px;">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Put / Call Ratio (PCR - OI)</div>
+            <div id="valOptPcr" style="font-size: 1.25rem; font-weight: 800; color: var(--warning-amber);">0.952</div>
+            <div id="valOptPcrText" style="font-size: 0.7rem; color: var(--text-secondary);">Balanced Institutional Positioning</div>
+          </div>
+
+          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 12px 14px;">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Recommended Strategy</div>
+            <div id="valOptRecStrategy" style="font-size: 0.95rem; font-weight: 800; color: var(--profit-green); margin-top: 4px;">ZERO-LOSS FUTURES</div>
+            <div id="valOptRecRationale" style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Theta decay too high for buying vanilla calls.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Black-Scholes Greeks Calculator & Payoff Simulator -->
+      <div class="card" style="margin-top: 16px;">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-calculator" style="color: var(--accent-primary)"></i>
+            <span>BLACK-SCHOLES FIRST & SECOND ORDER GREEKS CALCULATOR</span>
+          </div>
+          <span class="badge badge-enter">ANALYTICAL MODEL ACTIVE</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 8px;">
+          <div>
+            <label style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Spot Price ($)</label>
+            <input type="number" id="calcSpot" value="68000" style="width: 100%; margin-top: 4px;" oninput="recalculateGreeks()">
+          </div>
+          <div>
+            <label style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Strike Price ($)</label>
+            <input type="number" id="calcStrike" value="70000" style="width: 100%; margin-top: 4px;" oninput="recalculateGreeks()">
+          </div>
+          <div>
+            <label style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Days to Expiration (DTE)</label>
+            <input type="number" id="calcDte" value="7" min="0.1" step="0.5" style="width: 100%; margin-top: 4px;" oninput="recalculateGreeks()">
+          </div>
+          <div>
+            <label style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Implied Volatility (IV %)</label>
+            <input type="number" id="calcIv" value="55" min="1" max="250" style="width: 100%; margin-top: 4px;" oninput="recalculateGreeks()">
+          </div>
+        </div>
+
+        <!-- Calculated Greeks Result Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 14px;">
+          <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 10px;">
+            <div style="font-size: 0.7rem; color: #166534; font-weight: 700;">CALL PREMIUM (CE)</div>
+            <div id="calcCallPrem" style="font-size: 1.15rem; font-weight: 800; color: #15803d;">$1,120.50</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted);">Break-even: $<span id="calcCallBe">71,120</span></div>
+          </div>
+
+          <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 10px;">
+            <div style="font-size: 0.7rem; color: #991b1b; font-weight: 700;">PUT PREMIUM (PE)</div>
+            <div id="calcPutPrem" style="font-size: 1.15rem; font-weight: 800; color: #b91c1c;">$3,060.20</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted);">Break-even: $<span id="calcPutBe">66,940</span></div>
+          </div>
+
+          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px;">
+            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">DELTA (Δ)</div>
+            <div id="calcDelta" style="font-size: 1.15rem; font-weight: 800; color: var(--accent-primary);">+0.4120</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted);">Put Delta: <span id="calcPutDelta">-0.5880</span></div>
+          </div>
+
+          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px;">
+            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">GAMMA (Γ)</div>
+            <div id="calcGamma" style="font-size: 1.15rem; font-weight: 800; color: var(--violet-purple);">0.000072</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted);">Delta Acceleration Rate</div>
+          </div>
+
+          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px;">
+            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">DAILY THETA (Θ)</div>
+            <div id="calcTheta" style="font-size: 1.15rem; font-weight: 800; color: var(--loss-red);">-$68.50 / day</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted);">Daily Time Decay Erosion</div>
+          </div>
+
+          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px;">
+            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">VEGA (ν)</div>
+            <div id="calcVega" style="font-size: 1.15rem; font-weight: 800; color: var(--warning-amber);">+$42.30</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted);">P&L per 1.0% IV move</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deribit Active Options Chain Table -->
+      <div class="card" style="margin-top: 16px;">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-table-columns" style="color: var(--accent-primary)"></i>
+            <span>ACTIVE DERIBIT OPTIONS CHAIN MATRIX (CALLS VS PUTS)</span>
+          </div>
+          <div style="font-size: 0.72rem; color: var(--text-muted);">
+            Friday Expiration Window • European Style Cash Settlement
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th colspan="4" style="text-align: center; background: #f0fdf4; color: #15803d; border-right: 1px solid var(--border-color);">CALLS (CE)</th>
+                <th style="text-align: center; background: #e0f2fe; color: #0369a1;">STRIKE</th>
+                <th colspan="4" style="text-align: center; background: #fef2f2; color: #b91c1c; border-left: 1px solid var(--border-color);">PUTS (PE)</th>
+              </tr>
+              <tr>
+                <th>Call Premium ($)</th>
+                <th>Delta (Δ)</th>
+                <th>Theta / Day</th>
+                <th style="border-right: 1px solid var(--border-color);">Call OI</th>
+                <th style="text-align: center; font-weight: 800;">Strike Price</th>
+                <th style="border-left: 1px solid var(--border-color);">Put Premium ($)</th>
+                <th>Delta (Δ)</th>
+                <th>Theta / Day</th>
+                <th>Put OI</th>
+              </tr>
+            </thead>
+            <tbody id="optChainTable">
+              <tr>
+                <td colspan="9" style="text-align: center; color: var(--text-muted); padding: 24px;">
+                  Streaming Deribit live options orderbook...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    let currentTab = 'terminal';
+    let exchangeGuides = {};
+    let allMarketCoins = [];
+    let screenerStatusFilter = 'TOP_50';
+
+    function setScreenerStatusFilter(mode) {
+      screenerStatusFilter = mode;
+      document.getElementById('btnFilterTop50').classList.toggle('active', mode === 'TOP_50');
+      document.getElementById('btnFilterEnter').classList.toggle('active', mode === 'ENTER');
+      document.getElementById('btnFilterMonitoring').classList.toggle('active', mode === 'MONITORING');
+      document.getElementById('btnFilterAll').classList.toggle('active', mode === 'ALL');
+      filterScreenerTable();
+    }
+
+    function filterScreenerTable() {
+      const q = (document.getElementById('screenerSearchInput').value || '').trim().toUpperCase();
+      const screenerTable = document.getElementById('screenerTable');
+      let filtered = allMarketCoins;
+      if (screenerStatusFilter === 'TOP_50') {
+        filtered = filtered.filter(c => c.is_top_50 === true || (c.rank && c.rank <= 50));
+      } else if (screenerStatusFilter === 'ENTER') {
+        filtered = filtered.filter(c => c.status === 'ENTER');
+      } else if (screenerStatusFilter === 'MONITORING') {
+        filtered = filtered.filter(c => c.status === 'MONITORING');
+      }
+      if (q) {
+        filtered = filtered.filter(c => c.symbol.includes(q));
+      }
+      if (filtered.length === 0) {
+        screenerTable.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--text-muted); padding: 20px;">No coins matching current filter in the USDT market.</td></tr>`;
+        return;
+      }
+      let shtml = '';
+      filtered.forEach(coin => {
+        let decBadge = '';
+        if (coin.status === 'ENTER') {
+          decBadge = `<span class="badge badge-enter"><i class="fa-solid fa-bolt"></i> ENTER TRADE</span>`;
+        } else if (coin.status === 'MONITORING') {
+          decBadge = `<span class="badge badge-monitoring"><i class="fa-solid fa-eye"></i> MONITORING</span>`;
+        } else {
+          decBadge = `<span class="badge badge-leave">EXCLUDED</span>`;
+        }
+
+        const vitColor = coin.vitality_score >= 80 ? 'var(--profit-green)' : (coin.vitality_score >= 60 ? 'var(--accent-primary)' : 'var(--text-muted)');
+        const priceStr = coin.last_price >= 1 ? coin.last_price.toFixed(4) : coin.last_price.toFixed(6);
+
+        shtml += `
+          <tr>
+            <td><span class="badge ${coin.rank <= 50 ? 'badge-lev50' : 'badge-leave'}">#${coin.rank || '-'}</span></td>
+            <td><strong>${coin.symbol}</strong></td>
+            <td>${decBadge}</td>
+            <td style="font-weight: 700; color: ${vitColor};">${coin.vitality_score || '-'}</td>
+            <td>$${priceStr}</td>
+            <td>$${(coin.volume_24h_usd / 1e6).toFixed(1)}M</td>
+            <td style="color: ${coin.spread_pct <= 0.038 ? 'var(--profit-green)' : 'var(--loss-red)'}">${coin.spread_pct.toFixed(4)}%</td>
+            <td>${coin.trend_score}/100</td>
+            <td>${coin.chop_index}/100</td>
+            <td style="font-size: 0.74rem; color: ${coin.status === 'ENTER' ? 'var(--profit-green)' : (coin.status === 'MONITORING' ? 'var(--text-secondary)' : 'var(--text-muted)')}; font-weight: ${coin.status === 'ENTER' ? '600' : '400'};">${coin.rationale}</td>
+          </tr>
+        `;
+      });
+      screenerTable.innerHTML = shtml;
+    }
+
+    function switchTab(tabName) {
+      currentTab = tabName;
+      // Target only the header nav tab buttons
+      const navButtons = document.querySelectorAll('header .nav-tabs .tab-btn');
+      navButtons.forEach(btn => btn.classList.remove('active'));
+      
+      // Hide all tab contents
+      document.querySelectorAll('.tab-content').forEach(c => {
+        c.classList.remove('active');
+      });
+      
+      // Activate matching nav button safely
+      navButtons.forEach(btn => {
+        const oc = btn.getAttribute('onclick') || '';
+        if (oc.includes(tabName)) {
+          btn.classList.add('active');
+        }
+      });
+
+      // Show selected tab content
+      const targetId = tabName.startsWith('tab-') ? tabName : `tab-${tabName}`;
+      const activeContent = document.getElementById(targetId);
+      if (activeContent) {
+        activeContent.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (tabName === 'terminal') {
+          loadCandleChart();
+        }
+        if (tabName === 'options') {
+          loadOptionsChainData();
+          recalculateGreeks();
+        }
+      }
+    }
+
+    async function toggleBotPower() {
+      const isCurrentlyRunning = document.getElementById('statusDot').classList.contains('active');
+      const endpoint = isCurrentlyRunning ? '/api/bot/stop' : '/api/bot/start';
+      try {
+        const res = await fetch(endpoint, { method: 'POST' });
+        const data = await res.json();
+        pollState();
+      } catch (err) {
+        console.error('Power toggle error:', err);
+      }
+    }
+
+    async function triggerHourlyReportNow() {
+      try {
+        const res = await fetch('/api/reports/trigger', { method: 'POST' });
+        const data = await res.json();
+        alert('1-Hour Performance Audit Report Compiled Successfully!');
+        pollState();
+      } catch (err) {
+        console.error('Failed to trigger report:', err);
+      }
+    }
+
+    function toggleSecretVisibility() {
+      const secretInput = document.getElementById('cfgSecret');
+      const eyeIcon = document.getElementById('secretEyeIcon');
+      if (!secretInput || !eyeIcon) return;
+      if (secretInput.type === 'password') {
+        secretInput.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+      } else {
+        secretInput.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+      }
+    }
+
+    async function saveExchangeConfig() {
+      const mode = document.getElementById('cfgMode').value;
+      const exchangeId = document.getElementById('cfgExchange').value;
+      const apiKey = document.getElementById('cfgApiKey').value.trim();
+      const secret = document.getElementById('cfgSecret').value.trim();
+      const passphrase = document.getElementById('cfgPassphrase').value.trim();
+      const fbBox = document.getElementById('exchangeFeedbackBox');
+
+      if (fbBox) {
+        fbBox.style.display = 'block';
+        fbBox.style.background = '#f0f9ff';
+        fbBox.style.color = '#0284c7';
+        fbBox.style.border = '1px solid #bae6fd';
+        fbBox.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Connecting & verifying exchange credentials...';
+      }
+
+      if (mode === 'live' && (!apiKey || !secret)) {
+        if (fbBox) {
+          fbBox.style.background = '#fef2f2';
+          fbBox.style.color = '#dc2626';
+          fbBox.style.border = '1px solid #fecaca';
+          fbBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> <strong>API Secret Required:</strong> Binance requires BOTH the API Key and API Secret to connect to your live account. Please paste your API Secret (from Binance API Management), or select "Real-Time Simulation" mode.';
+        }
+        return;
+      }
+
+      const payload = {
+        exchange_id: exchangeId,
+        mode: mode,
+        api_key: apiKey,
+        secret: secret,
+        passphrase: passphrase
+      };
+
+      try {
+        const res = await fetch('/api/exchange/configure', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+          if (fbBox) {
+            fbBox.style.background = '#f0fdf4';
+            fbBox.style.color = '#15803d';
+            fbBox.style.border = '1px solid #bbf7d0';
+            fbBox.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${data.message || 'Exchange configuration applied successfully.'}`;
+          }
+          if (document.getElementById('currentModeBadge')) {
+            document.getElementById('currentModeBadge').innerText = `${data.mode.toUpperCase()} MODE ACTIVE`;
+            document.getElementById('currentModeBadge').className = data.mode === 'live' ? 'badge badge-enter' : 'badge badge-lev10';
+          }
+        } else {
+          if (fbBox) {
+            fbBox.style.background = '#fef2f2';
+            fbBox.style.color = '#dc2626';
+            fbBox.style.border = '1px solid #fecaca';
+            fbBox.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> <strong>Connection Warning:</strong> ${data.message || 'Failed to authenticate with exchange.'}`;
+          }
+        }
+        pollState();
+      } catch (err) {
+        if (fbBox) {
+          fbBox.style.background = '#fef2f2';
+          fbBox.style.color = '#dc2626';
+          fbBox.style.border = '1px solid #fecaca';
+          fbBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Network error connecting to exchange API.';
+        }
+      }
+    }
+
+    async function runStressTestNow() {
+      const scenario = document.getElementById('stressScenarioSelect').value;
+      try {
+        const res = await fetch('/api/stress-test/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scenario: scenario })
+        });
+        const data = await res.json();
+        const box = document.getElementById('stressResultBox');
+        box.style.display = 'block';
+        document.getElementById('stressResultTitle').innerText = data.passed ? '✓ BLACK SWAN SURVIVAL AUDIT PASSED' : 'STRESS TEST WARNING';
+        document.getElementById('stressResultTitle').style.color = data.passed ? 'var(--profit-green)' : 'var(--loss-red)';
+        document.getElementById('stressDrawdownBadge').innerText = `Total Drawdown: ${data.total_drawdown_pct}% (< 2.0% Bound)`;
+        document.getElementById('stressDrawdownBadge').className = data.passed ? 'badge badge-buy' : 'badge badge-sell';
+        document.getElementById('stressLogLines').innerHTML = data.test_log.map(l => `<div>${l}</div>`).join('');
+        document.getElementById('stressMerkleCert').innerText = `Cryptographic Merkle Proof: ${data.certificate.merkle_certificate}`;
+        pollState();
+      } catch (err) {
+        console.error('Stress test error:', err);
+      }
+    }
+
+    async function saveCapitalCeiling() {
+      const ceiling = document.getElementById('cfgCeilingInput').value;
+      try {
+        const res = await fetch('/api/safety/ceiling', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ceiling_usdt: ceiling })
+        });
+        const data = await res.json();
+        alert(`Hard Capital Ceiling set to $${data.new_ceiling_usdt} USDT.`);
+        pollState();
+      } catch (err) {
+        console.error('Ceiling save error:', err);
+      }
+    }
+
+    function updateExchangeGuide() {
+      const exKey = document.getElementById('cfgExchange').value;
+      const guide = exchangeGuides[exKey];
+      if (!guide) return;
+
+      document.getElementById('guideTitle').innerText = `${guide.name} - API Key Generation & Verification`;
+      
+      let html = '<div style="margin-bottom: 14px;"><strong>Permissions Checklist:</strong><ul style="margin: 6px 0 12px 20px; font-size: 0.82rem; color: #475569;">';
+      guide.permissions_checklist.forEach(p => {
+        html += `<li>${p}</li>`;
+      });
+      html += '</ul></div>';
+
+      html += '<div><strong>Step-by-Step Instructions:</strong>';
+      guide.step_by_step.forEach((step, idx) => {
+        html += `
+          <div class="guide-step">
+            <div class="guide-num">${idx + 1}</div>
+            <div>${step}</div>
+          </div>
+        `;
+      });
+      html += '</div>';
+
+      document.getElementById('guideStepsContainer').innerHTML = html;
+    }
+
+    async function dispatchManualOrder(action) {
+      const symbol = document.getElementById('manualOrderSymbol').value;
+      const leverage = parseInt(document.getElementById('manualOrderLeverage').value);
+      const margin = parseFloat(document.getElementById('manualOrderMargin').value);
+      const fb = document.getElementById('manualOrderFeedback');
+
+      if (fb) {
+        fb.style.display = 'block';
+        fb.style.background = '#f0f9ff';
+        fb.style.color = '#0284c7';
+        fb.style.border = '1px solid #bae6fd';
+        fb.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Dispatching manual ${action} order on ${symbol}...`;
+      }
+
+      try {
+        const res = await fetch('/api/order/manual', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ symbol: symbol, action: action, leverage: leverage, margin_usdt: margin })
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+          if (fb) {
+            fb.style.background = '#f0fdf4';
+            fb.style.color = '#15803d';
+            fb.style.border = '1px solid #bbf7d0';
+            fb.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${data.message}`;
+          }
+          pollState();
+        } else {
+          if (fb) {
+            fb.style.background = '#fef2f2';
+            fb.style.color = '#dc2626';
+            fb.style.border = '1px solid #fecaca';
+            fb.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${data.message || 'Execution failed.'}`;
+          }
+        }
+      } catch (err) {
+        if (fb) {
+          fb.style.background = '#fef2f2';
+          fb.style.color = '#dc2626';
+          fb.style.border = '1px solid #fecaca';
+          fb.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Network error placing order.';
+        }
+      }
+    }
+
+    async function closePositionNow(symbol) {
+      if (!confirm(`Are you sure you want to close the active position on ${symbol} immediately at market mark price?`)) return;
+      try {
+        const res = await fetch('/api/order/close', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ symbol: symbol })
+        });
+        const data = await res.json();
+        alert(data.message || 'Position closed.');
+        pollState();
+      } catch (err) {
+        alert('Error closing position.');
+      }
+    }
+
+    async function changeMaxBooksCapacity(val) {
+      try {
+        const res = await fetch('/api/config/books', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ max_books: parseInt(val) })
+        });
+        const data = await res.json();
+        pollState();
+      } catch (err) {
+        console.error('Error updating books capacity:', err);
+      }
+    }
+
+    async function closeAllPositions() {
+      if (!confirm('EMERGENCY ACTION: Close all active Buy & Sell positions immediately at market mark price?')) return;
+      try {
+        const res = await fetch('/api/state');
+        const state = await res.json();
+        const positions = state.active_positions || [];
+        for (const pos of positions) {
+          await fetch('/api/order/close', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ symbol: pos.symbol })
+          });
+        }
+        alert('All active positions closed.');
+        pollState();
+      } catch (err) {
+        alert('Error during emergency close.');
+      }
+    }
+
+    async function pollState() {
+      try {
+        const res = await fetch('/api/state');
+        const state = await res.json();
+        renderDashboard(state);
+      } catch (err) {
+        console.error('Poll failed:', err);
+      }
+    }
+
+    function renderDashboard(s) {
+      // 1. Master Control Status
+      const statusDot = document.getElementById('statusDot');
+      const statusText = document.getElementById('statusText');
+      const powerBtn = document.getElementById('powerBtn');
+      const powerBtnText = document.getElementById('powerBtnText');
+
+      if (s.is_running) {
+        statusDot.className = 'status-dot active';
+        statusText.innerText = 'BOT OPERATING 24x7 (AUTONOMOUS)';
+        statusText.style.color = 'var(--profit-green)';
+        powerBtn.className = 'btn-power btn-on';
+        powerBtnText.innerText = 'TURN BOT OFF';
+      } else {
+        statusDot.className = 'status-dot';
+        statusText.innerText = 'BOT OFFLINE (PAUSED)';
+        statusText.style.color = 'var(--text-muted)';
+        powerBtn.className = 'btn-power btn-off';
+        powerBtnText.innerText = 'TURN BOT ON';
+      }
+
+      // 2. Metrics Bar
+      document.getElementById('valBalance').innerText = `$${s.balance_usdt.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+      document.getElementById('valEquity').innerText = `$${s.equity_usdt.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+      document.getElementById('valUnrealized').innerText = `Unrealized PnL: $${s.unrealized_pnl_usdt >= 0 ? '+' : ''}${s.unrealized_pnl_usdt.toFixed(2)}`;
+      
+      const netPnlEl = document.getElementById('valNetPnl');
+      netPnlEl.innerText = `${s.net_realized_pnl_usdt >= 0 ? '+' : ''}$${s.net_realized_pnl_usdt.toFixed(2)}`;
+      netPnlEl.className = s.net_realized_pnl_usdt >= 0 ? 'metric-value profit' : 'metric-value';
+      if (s.net_realized_pnl_usdt < 0) netPnlEl.style.color = 'var(--loss-red)';
+      
+      document.getElementById('valWinRate').innerText = `Win Rate: ${s.win_rate_pct}% (${s.total_trades} trades)`;
+      document.getElementById('valS3Corrections').innerText = `S3 Auto-Corrections: ${s.s3_autocorrections}`;
+      
+      const hrs = String(Math.floor(s.uptime_seconds / 3600)).padStart(2, '0');
+      const mins = String(Math.floor((s.uptime_seconds % 3600) / 60)).padStart(2, '0');
+      const secs = String(s.uptime_seconds % 60).padStart(2, '0');
+      document.getElementById('valUptime').innerText = `Uptime: ${hrs}:${mins}:${secs}`;
+
+      // Latency & Colocation Telemetry Binding
+      if (s.latency_telemetry) {
+        const lt = s.latency_telemetry;
+        const latEl = document.getElementById('valLatencyDisplay');
+        if (latEl) latEl.innerText = `${lt.exchange_ack_latency_ms.toFixed(2)} ms (-${lt.time_reduced_pct}%)`;
+        
+        const decEl = document.getElementById('valInternalDecisionUs');
+        if (decEl) decEl.innerText = `${lt.internal_decision_us} µs`;
+        
+        const wireEl = document.getElementById('valWireDispatchUs');
+        if (wireEl) wireEl.innerText = `${lt.wire_dispatch_us} µs`;
+        
+        const ackEl = document.getElementById('valExchangeAckMs');
+        if (ackEl) ackEl.innerText = `${lt.exchange_ack_latency_ms.toFixed(2)} ms`;
+        
+        const bRedEl = document.getElementById('bannerTimeReduced');
+        if (bRedEl) bRedEl.innerText = `${lt.time_reduced_pct}% TIME ELIMINATED`;
+        
+        const bRegEl = document.getElementById('bannerColocationRegion');
+        if (bRegEl) bRegEl.innerText = `${lt.matching_engine_region} • ${lt.active_protocol}`;
+      }
+
+      // 3. World Sessions
+      if (s.world_sessions) {
+        document.getElementById('sessionsRegime').innerText = `${s.world_sessions.regime} (Vol Boost: ${s.world_sessions.volatility_boost_factor}x)`;
+        let sessHtml = '';
+        const details = s.world_sessions.sessions_detail || {};
+        for (const [name, d] of Object.entries(details)) {
+          sessHtml += `
+            <div class="session-badge ${d.active ? 'active' : ''}">
+              <div class="session-name">
+                <span>${name}</span>
+                <span class="session-status">${d.active ? 'ACTIVE' : 'CLOSED'}</span>
+              </div>
+              <div class="session-hours">${d.hours_utc}</div>
+            </div>
+          `;
+        }
+        document.getElementById('sessionsGrid').innerHTML = sessHtml;
+      }
+
+      // 4. Active Positions (Terminal Table)
+      const posTable = document.getElementById('activePositionsTable');
+      document.getElementById('activeCountBadge').innerText = `${s.active_positions.length} OPEN`;
+      if (s.active_positions.length === 0) {
+        posTable.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--accent-primary); padding: 20px; font-weight: 600;"><i class="fa-solid fa-satellite-dish fa-fade"></i> Pre-Warmed Queue Active — Pre-emptively scanning Top 50 Vital pairs for next entry trigger.</td></tr>`;
+      } else {
+        let phtml = '';
+        s.active_positions.forEach(p => {
+          const levBadge = p.leverage === 100 ? 'badge-lev100' : (p.leverage === 50 ? 'badge-lev50' : 'badge-lev10');
+          const sideBadge = p.action === 'BUY' ? 'badge-buy' : 'badge-sell';
+          const pnlColor = p.unrealized_pnl_pct >= 0 ? 'var(--profit-green)' : 'var(--loss-red)';
+          phtml += `
+            <tr>
+              <td><strong>${p.symbol}</strong></td>
+              <td><span class="badge ${sideBadge}">${p.action}</span></td>
+              <td><span class="badge ${levBadge}">${p.leverage}x</span></td>
+              <td>$${p.entry_price.toFixed(4)}</td>
+              <td>$${p.current_price.toFixed(4)}</td>
+              <td style="color: var(--accent-primary); font-weight: 600;">$${p.current_stop_price.toFixed(4)}</td>
+              <td>$${p.allocated_margin_usdt.toFixed(2)}</td>
+              <td style="color: ${pnlColor}; font-weight: 700;">${p.unrealized_pnl_pct >= 0 ? '+' : ''}${p.unrealized_pnl_pct.toFixed(2)}%</td>
+              <td><span class="badge" style="background: #ede9fe; color:#6d28d9; border: 1px solid #ddd6fe;">${p.last_autocorrect || 'Guaranteed Zero/Minimal Loss'}</span></td>
+            </tr>
+          `;
+        });
+        posTable.innerHTML = phtml;
+      }
+
+      // 4b. Live Buy & Sell Desk Tabular Column Blotters & Metrics
+      const deskPosTable = document.getElementById('liveDeskPositionsTable');
+      const deskClosedTable = document.getElementById('liveDeskClosedTable');
+      
+      let activeBuys = 0, activeSells = 0, buysMargin = 0.0, sellsMargin = 0.0, s3Locked = 0;
+      s.active_positions.forEach(p => {
+        if (p.action === 'BUY') {
+          activeBuys++;
+          buysMargin += (p.allocated_margin_usdt || 0);
+        } else {
+          activeSells++;
+          sellsMargin += (p.allocated_margin_usdt || 0);
+        }
+        if (p.last_autocorrect && p.last_autocorrect.includes('Breakeven')) s3Locked++;
+      });
+
+      if (document.getElementById('deskActiveBuysCount')) {
+        document.getElementById('deskActiveBuysCount').innerText = `${activeBuys} BUYS (LONG)`;
+        document.getElementById('deskActiveBuysMargin').innerText = `Allocated: $${buysMargin.toFixed(2)} USDT`;
+        document.getElementById('deskActiveSellsCount').innerText = `${activeSells} SELLS (SHORT)`;
+        document.getElementById('deskActiveSellsMargin').innerText = `Allocated: $${sellsMargin.toFixed(2)} USDT`;
+        
+        const unEl = document.getElementById('deskUnrealizedPnl');
+        unEl.innerText = `$${s.unrealized_pnl_usdt >= 0 ? '+' : ''}${s.unrealized_pnl_usdt.toFixed(2)}`;
+        unEl.className = s.unrealized_pnl_usdt >= 0 ? 'metric-value profit' : 'metric-value';
+        if (s.unrealized_pnl_usdt < 0) unEl.style.color = 'var(--loss-red)';
+        
+        document.getElementById('deskS3ProtectedCount').innerText = `${s3Locked} LOCKED`;
+        document.getElementById('deskOpenBadge').innerText = `${s.active_positions.length} OPEN POSITIONS`;
+      }
+
+      // Fund Manager Economics Binding
+      if (s.fund_manager_economics) {
+        const fm = s.fund_manager_economics;
+        const fmAum = document.getElementById('fmFundAum');
+        if (fmAum) fmAum.innerText = `$${fm.aum_usdt.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+        const fmCash = document.getElementById('fmCashReserve');
+        if (fmCash) fmCash.innerText = `Cash Reserve: $${fm.available_cash_usdt.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+        const fmDep = document.getElementById('fmDeployedMargin');
+        if (fmDep) fmDep.innerText = `$${fm.active_deployed_margin_usdt.toFixed(2)}`;
+        const fmDepPct = document.getElementById('fmDeploymentPct');
+        if (fmDepPct) fmDepPct.innerText = `${fm.deployment_pct}% Deployed • ${fm.active_positions_count}/${fm.max_concurrent_positions} Books Active (Cap: $${fm.max_capital_ceiling_usdt})`;
+        const fmHwm = document.getElementById('fmHighWaterMark');
+        if (fmHwm) fmHwm.innerText = `$${fm.high_water_mark_usdt.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+        const fmFee = document.getElementById('fmManagerPayout');
+        if (fmFee) fmFee.innerText = `+$${fm.total_fund_manager_payout_usdt.toFixed(2)}`;
+        const fmInv = document.getElementById('fmInvestorShare');
+        if (fmInv) fmInv.innerText = `Investor Net Share (80%): +$${fm.total_investor_payout_usdt.toFixed(2)}`;
+        
+        const selBooks = document.getElementById('selectMaxBooks');
+        if (selBooks && !selBooks.matches(':focus')) {
+          selBooks.value = String(fm.max_concurrent_positions);
+        }
+      }
+
+      if (deskPosTable) {
+        if (s.active_positions.length === 0) {
+          const topPairs = (s.screener_summary && s.screener_summary.selected_pairs && s.screener_summary.selected_pairs.length > 0)
+            ? s.screener_summary.selected_pairs.slice(0, 5).join(', ')
+            : 'Top 50 Vital Universe (BTC, ETH, SOL, NEAR, AVAX)';
+          deskPosTable.innerHTML = `<tr><td colspan="13" style="text-align: center; color: var(--accent-primary); padding: 24px;">
+            <div style="font-weight: 700; font-size: 0.92rem; margin-bottom: 4px;">
+              <i class="fa-solid fa-satellite-dish fa-fade"></i> Pre-Warmed Queue Active — Continuous Background Monitoring
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);">
+              Actively tracking Top 50 Vital Coins. Next booking queue: <strong style="color: var(--text-main);">${topPairs}</strong> (zero-latency auto-dispatch on confluence).
+            </div>
+          </td></tr>`;
+        } else {
+          let dphtml = '';
+          s.active_positions.forEach(p => {
+            const levBadge = p.leverage === 100 ? 'badge-lev100' : (p.leverage === 50 ? 'badge-lev50' : 'badge-lev10');
+            const sideBadge = p.action === 'BUY' ? 'badge-buy' : 'badge-sell';
+            const actionLabel = p.action === 'BUY' ? 'BUY (LONG)' : 'SELL (SHORT)';
+            const pnlColor = p.unrealized_pnl_pct >= 0 ? 'var(--profit-green)' : 'var(--loss-red)';
+            const pnlUsd = (p.allocated_margin_usdt * (p.unrealized_pnl_pct / 100.0)).toFixed(2);
+            dphtml += `
+              <tr>
+                <td style="color: var(--text-muted); font-size: 0.72rem;">${p.entry_time}</td>
+                <td><strong>${p.symbol}</strong></td>
+                <td><span class="badge ${sideBadge}"><i class="fa-solid ${p.action === 'BUY' ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down'}"></i> ${actionLabel}</span></td>
+                <td><span class="badge ${levBadge}">${p.leverage}x</span></td>
+                <td>$${p.entry_price.toFixed(4)}</td>
+                <td style="font-weight: 700; color: var(--text-main);">$${p.current_price.toFixed(4)}</td>
+                <td>$${p.allocated_margin_usdt.toFixed(2)}</td>
+                <td style="font-size: 0.75rem;">$${p.position_size_usdt.toFixed(2)} (${p.coins_amount ? p.coins_amount.toFixed(2) : ''})</td>
+                <td style="color: var(--profit-green); font-weight: 600;">$${p.tp_target_price ? p.tp_target_price.toFixed(4) : '--'}</td>
+                <td style="color: var(--accent-primary); font-weight: 600;">$${p.current_stop_price.toFixed(4)}</td>
+                <td style="color: ${pnlColor}; font-weight: 800;">${p.unrealized_pnl_pct >= 0 ? '+' : ''}${p.unrealized_pnl_pct.toFixed(2)}% ($${pnlUsd})</td>
+                <td><span class="badge" style="background: ${p.last_autocorrect ? '#ede9fe' : '#f1f5f9'}; color: ${p.last_autocorrect ? '#6d28d9' : '#64748b'}; border: 1px solid ${p.last_autocorrect ? '#ddd6fe' : '#e2e8f0'};">${p.last_autocorrect || 'Tracking Trajectory'}</span></td>
+                <td style="text-align: center;">
+                  <button class="btn-action" style="background: #fee2e2; color: #dc2626; border-color: #fecaca; padding: 4px 10px; font-size: 0.7rem;" onclick="closePositionNow('${p.symbol}')">
+                    <i class="fa-solid fa-xmark"></i> Close
+                  </button>
+                </td>
+              </tr>
+            `;
+          });
+          deskPosTable.innerHTML = dphtml;
+        }
+      }
+
+      if (deskClosedTable) {
+        if (s.recent_closed_orders.length === 0) {
+          deskClosedTable.innerHTML = `<tr><td colspan="14" style="text-align: center; color: var(--text-muted); padding: 24px;">Awaiting closed trade realizations.</td></tr>`;
+        } else {
+          let dchtml = '';
+          s.recent_closed_orders.forEach(c => {
+            const levBadge = c.leverage === 100 ? 'badge-lev100' : (c.leverage === 50 ? 'badge-lev50' : 'badge-lev10');
+            const sideBadge = c.action === 'BUY' ? 'badge-buy' : 'badge-sell';
+            const actionLabel = c.action === 'BUY' ? 'BUY (LONG)' : 'SELL (SHORT)';
+            const pnlColor = c.net_pnl_usd >= 0 ? 'var(--profit-green)' : 'var(--loss-red)';
+            dchtml += `
+              <tr>
+                <td style="color: var(--text-muted); font-size: 0.72rem;">${c.exit_time}</td>
+                <td><strong>${c.symbol}</strong></td>
+                <td><span class="badge ${sideBadge}">${actionLabel}</span></td>
+                <td><span class="badge ${levBadge}">${c.leverage}x</span></td>
+                <td>$${c.entry_price.toFixed(4)}</td>
+                <td>$${c.exit_price.toFixed(4)}</td>
+                <td style="color: ${c.price_delta_pct >= 0 ? 'var(--profit-green)' : 'var(--loss-red)'}">${c.price_delta_pct >= 0 ? '+' : ''}${c.price_delta_pct}%</td>
+                <td>$${c.allocated_margin_usdt.toFixed(2)}</td>
+                <td>$${c.gross_pnl_usd >= 0 ? '+' : ''}${c.gross_pnl_usd.toFixed(2)}</td>
+                <td style="color: var(--text-muted);">$${c.fee_usd.toFixed(3)}</td>
+                <td style="color: ${pnlColor}; font-weight: 800;">${c.net_pnl_usd >= 0 ? '+' : ''}$${c.net_pnl_usd.toFixed(2)}</td>
+                <td style="color: ${pnlColor}; font-weight: 800;">${c.roi_margin_pct >= 0 ? '+' : ''}${c.roi_margin_pct}%</td>
+                <td style="font-size: 0.72rem;">${c.exit_reason}</td>
+                <td><span class="badge" style="background: #f1f5f9; color: var(--text-secondary); font-family: monospace;">${c.merkle_seal || 'Verified'}</span></td>
+              </tr>
+            `;
+          });
+          deskClosedTable.innerHTML = dchtml;
+        }
+      }
+
+      // 5. Closed Orders History (Terminal Table)
+      const closedTable = document.getElementById('closedOrdersTable');
+      if (s.recent_closed_orders.length === 0) {
+        closedTable.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--text-muted); padding: 18px;">Awaiting initial cycle executions.</td></tr>`;
+      } else {
+        let chtml = '';
+        s.recent_closed_orders.forEach(c => {
+          const levBadge = c.leverage === 100 ? 'badge-lev100' : (c.leverage === 50 ? 'badge-lev50' : 'badge-lev10');
+          const sideBadge = c.action === 'BUY' ? 'badge-buy' : 'badge-sell';
+          const pnlColor = c.net_pnl_usd >= 0 ? 'var(--profit-green)' : 'var(--loss-red)';
+          chtml += `
+            <tr>
+              <td style="color: var(--text-muted);">${c.exit_time}</td>
+              <td><strong>${c.symbol}</strong></td>
+              <td><span class="badge ${sideBadge}">${c.action}</span></td>
+              <td><span class="badge ${levBadge}">${c.leverage}x</span></td>
+              <td>$${c.entry_price.toFixed(4)}</td>
+              <td>$${c.exit_price.toFixed(4)}</td>
+              <td style="color: ${c.price_delta_pct >= 0 ? 'var(--profit-green)' : 'var(--loss-red)'}">${c.price_delta_pct >= 0 ? '+' : ''}${c.price_delta_pct}%</td>
+              <td style="color: ${pnlColor}; font-weight: 700;">${c.net_pnl_usd >= 0 ? '+' : ''}$${c.net_pnl_usd.toFixed(2)}</td>
+              <td style="color: ${pnlColor}; font-weight: 700;">${c.roi_margin_pct >= 0 ? '+' : ''}${c.roi_margin_pct}%</td>
+              <td><span class="badge" style="background: #f1f5f9; color: var(--text-secondary);">${c.merkle_seal || 'Verified'}</span></td>
+            </tr>
+          `;
+        });
+        closedTable.innerHTML = chtml;
+      }
+
+      // 6. Cognitive Logs Stream
+      const logContainer = document.getElementById('cognitiveStream');
+      if (s.cognitive_logs && s.cognitive_logs.length > 0) {
+        let lhtml = '';
+        s.cognitive_logs.forEach(l => {
+          lhtml += `
+            <div class="log-item ${l.layer}">
+              <div class="log-header">
+                <span class="log-tag">[${l.layer}] ${l.event_type}</span>
+                <span>${l.timestamp}</span>
+              </div>
+              <div>${l.message}</div>
+            </div>
+          `;
+        });
+        logContainer.innerHTML = lhtml;
+      }
+
+      // 7. Top 50 Vital Screener Table
+      if (s.screener_summary && s.screener_summary.all_coins) {
+        allMarketCoins = s.screener_summary.all_coins || [];
+        document.getElementById('screenerTotalCount').innerText = `${s.screener_summary.total_screened || allMarketCoins.length}+ Pairs`;
+        if (document.getElementById('screenerTop50Badge')) {
+          document.getElementById('screenerTop50Badge').innerText = `${s.screener_summary.top_50_count || 50} VITAL COINS`;
+        }
+        document.getElementById('screenerEnteredBadge').innerText = `${s.screener_summary.entered_count || 0} ENTERED`;
+        if (document.getElementById('screenerMonitoringBadge')) {
+          document.getElementById('screenerMonitoringBadge').innerText = `${s.screener_summary.monitoring_count || 0} MONITORING`;
+        }
+        document.getElementById('screenerLeftOutBadge').innerText = `${s.screener_summary.left_out_count || 0} EXCLUDED`;
+        filterScreenerTable();
+      }
+
+      // 8. 1-Hour Reports
+      if (s.latest_hourly_reports && s.latest_hourly_reports.length > 0) {
+        const repContainer = document.getElementById('reportsContainer');
+        let rhtml = '';
+        s.latest_hourly_reports.forEach(rep => {
+          rhtml += `
+            <div class="report-card">
+              <div class="report-head">
+                <div>
+                  <strong style="color: var(--accent-primary);">${rep.hourly_window}</strong>
+                  <span style="font-size: 0.72rem; color: var(--text-muted); margin-left: 8px;">Generated: ${rep.generated_at_utc}</span>
+                </div>
+                <div style="font-weight: 700; color: ${rep.financial_summary.net_hourly_profit_usdt >= 0 ? 'var(--profit-green)' : 'var(--loss-red)'}">
+                  Net PnL: ${rep.financial_summary.net_hourly_profit_usdt >= 0 ? '+' : ''}$${rep.financial_summary.net_hourly_profit_usdt} USDT (${rep.financial_summary.roi_hourly_pct}% ROI)
+                </div>
+              </div>
+              <div style="display: flex; gap: 20px; font-size: 0.78rem; margin-bottom: 12px; color: var(--text-secondary);">
+                <div>Orders Placed: <strong>${rep.execution_metrics.total_orders_executed}</strong></div>
+                <div>Win Rate: <strong>${rep.execution_metrics.win_rate_pct}%</strong></div>
+                <div>Fees Paid: <strong>$${rep.financial_summary.total_fees_paid_usdt}</strong></div>
+                <div>S3 Auto-Corrections: <strong>${rep.execution_metrics.s3_neuroplastic_corrections}</strong></div>
+                <div>Leverages: 10x (${rep.execution_metrics.leverage_distribution['10x']}), 50x (${rep.execution_metrics.leverage_distribution['50x']}), 100x (${rep.execution_metrics.leverage_distribution['100x']})</div>
+              </div>
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Pair</th>
+                      <th>Side</th>
+                      <th>Leverage</th>
+                      <th>Entry Price</th>
+                      <th>Exit Price</th>
+                      <th>Position Notional</th>
+                      <th>Fee</th>
+                      <th>Net Profit</th>
+                      <th>ROI %</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${rep.orders_calculation_detail.map(o => `
+                      <tr>
+                        <td style="font-family: monospace; font-size: 0.7rem;">${o.order_id}</td>
+                        <td><strong>${o.symbol}</strong></td>
+                        <td>${o.side}</td>
+                        <td>${o.leverage}</td>
+                        <td>${o.entry_price}</td>
+                        <td>${o.exit_price}</td>
+                        <td>${o.position_notional}</td>
+                        <td>${o.trading_fee}</td>
+                        <td style="color: var(--profit-green); font-weight: 700;">${o.net_pnl}</td>
+                        <td style="color: var(--profit-green); font-weight: 700;">${o.roi_margin_pct}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          `;
+        });
+        repContainer.innerHTML = rhtml;
+      }
+
+      // 9. 4-Phase System Telemetry Rendering
+      if (s.phases) {
+        // Phase 1: Benchmark
+        if (s.phases.phase1_benchmark) {
+          const p1 = s.phases.phase1_benchmark;
+          document.getElementById('p1CycleBadge').innerText = `CYCLE ${p1.current_cycle} / ${p1.target_cycles}`;
+          document.getElementById('p1ProgressBar').style.width = `${p1.progress_pct}%`;
+          document.getElementById('p1ProgressText').innerText = `${p1.progress_pct}% Complete (${p1.current_cycle} / ${p1.target_cycles} Cycles)`;
+          document.getElementById('p1DriftText').innerText = `System 5 Balance Drift: ${s.balance_drift_variance ? s.balance_drift_variance.toFixed(8) : '0.00000000'}`;
+        }
+
+        // Phase 3: Live Safety Gateway
+        if (s.phases.phase3_safety_gateway) {
+          const p3 = s.phases.phase3_safety_gateway;
+          document.getElementById('valCommittedMargin').innerText = `$${p3.total_live_margin_committed.toFixed(2)} USDT`;
+          document.getElementById('valSafetyHeadroom').innerText = `Headroom Available: $${p3.available_safety_headroom_usdt.toFixed(2)}`;
+          document.getElementById('valAvgSlippage').innerText = `${(p3.average_slippage_pct || 0).toFixed(4)}%`;
+        }
+
+        // Phase 4: Compounding & Kelly
+        if (s.phases.phase4_compounding) {
+          const p4 = s.phases.phase4_compounding;
+          document.getElementById('valKellyPct').innerText = `${p4.fractional_kelly_pct}%`;
+          document.getElementById('valKellyMargin').innerText = `$${p4.recommended_margin_usdt.toFixed(2)} USDT`;
+          document.getElementById('valPayoffRatio').innerText = p4.payoff_ratio_b || '1.85';
+          document.getElementById('valCompoundingRegime').innerText = p4.regime;
+          
+          const damperBadge = document.getElementById('valDamperBadge');
+          if (p4.leverage_damper_active) {
+            damperBadge.className = 'badge badge-sell';
+            damperBadge.innerText = 'DAMPER ENGAGED (10x MAX)';
+          } else {
+            damperBadge.className = 'badge badge-lev100';
+            damperBadge.innerText = 'NORMAL REGIME (UP TO 100x)';
+          }
+        }
+      }
+
+      // 10. Capitol Alpha Political Tracker
+      if (s.political_alpha) {
+        const pa = s.political_alpha;
+        const sentIndexEl = document.getElementById('valPolSentimentIndex');
+        if (sentIndexEl) {
+          sentIndexEl.innerText = `${pa.overall_sentiment_index >= 0 ? '+' : ''}${pa.overall_sentiment_index} / 100`;
+          sentIndexEl.className = pa.overall_sentiment_index >= 0 ? 'metric-value profit' : 'metric-value';
+          document.getElementById('polScoreBadge').innerText = `${pa.overall_sentiment_index >= 0 ? '+' : ''}${pa.overall_sentiment_index} SENTIMENT INDEX`;
+          document.getElementById('polMarketRegimeBadge').innerText = pa.market_regime.replace(/_/g, ' ');
+          document.getElementById('valPolTotalFilings').innerText = `${pa.total_filings_tracked} Disclosures`;
+          document.getElementById('valPolRegimeText').innerText = pa.market_regime.replace(/_/g, ' ');
+        }
+
+        // Crypto Multipliers Grid
+        const gridEl = document.getElementById('cryptoPoliticalMultipliersGrid');
+        if (gridEl && pa.crypto_sentiment_map) {
+          let ghtml = '';
+          for (const [sym, data] of Object.entries(pa.crypto_sentiment_map)) {
+            const isBull = data.sentiment_score >= 0;
+            const badgeClass = isBull ? 'badge-buy' : 'badge-sell';
+            ghtml += `
+              <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                  <strong>${sym}</strong>
+                  <span class="badge ${badgeClass}">${data.bias}</span>
+                </div>
+                <div style="font-size: 1.05rem; font-weight: 800; color: ${isBull ? 'var(--profit-green)' : 'var(--loss-red)'};">
+                  ${data.sentiment_score >= 0 ? '+' : ''}${data.sentiment_score}
+                </div>
+                <div style="font-size: 0.7rem; color: var(--accent-primary); margin-top: 2px;">
+                  Confidence Boost: +${(data.confidence_boost * 100).toFixed(1)}%
+                </div>
+              </div>
+            `;
+          }
+          gridEl.innerHTML = ghtml;
+        }
+
+        // Disclosures Table
+        const disTable = document.getElementById('polDisclosuresTable');
+        if (disTable && pa.recent_disclosures) {
+          let dhtml = '';
+          pa.recent_disclosures.forEach(d => {
+            const isBuy = d.transaction_type === 'BUY';
+            const partyBadge = d.party === 'Democrat' ? 'badge-lev50' : 'badge-sell';
+            const targets = (d.target_cryptos || []).join(', ') || 'Macro Tailwinds';
+            dhtml += `
+              <tr>
+                <td><strong>${d.politician}</strong> <span style="font-size: 0.72rem; color: var(--text-muted);">(${d.state})</span></td>
+                <td><span class="badge ${partyBadge}">${d.chamber} (${d.party[0]})</span></td>
+                <td style="font-size: 0.76rem; color: var(--text-main); font-weight: 600;">${d.committee} <span style="color: var(--violet-purple);">(${d.committee_weight}x)</span></td>
+                <td><strong>${d.ticker}</strong> <div style="font-size: 0.7rem; color: var(--text-muted);">${d.asset_description}</div></td>
+                <td><span class="badge ${isBuy ? 'badge-buy' : 'badge-sell'}">${d.transaction_type}</span></td>
+                <td style="font-size: 0.76rem;">${d.amount_range}</td>
+                <td style="font-size: 0.72rem; color: var(--text-muted);">${d.trade_date} <br>Filed: ${d.filed_date}</td>
+                <td><span class="badge badge-monitoring">${d.days_lag}d Lag</span></td>
+                <td style="font-weight: 700; color: var(--accent-primary); font-size: 0.78rem;">${targets}</td>
+                <td style="font-weight: 800; color: ${d.impact_score >= 0 ? 'var(--profit-green)' : 'var(--loss-red)'};">${d.impact_score >= 0 ? '+' : ''}${d.impact_score}</td>
+              </tr>
+            `;
+          });
+          disTable.innerHTML = dhtml;
+        }
+      }
+
+      // Store exchange guides
+      if (s.exchange_info && s.exchange_info.guides) {
+        exchangeGuides = s.exchange_info.guides;
+        updateExchangeGuide();
+        document.getElementById('currentModeBadge').innerText = `${s.exchange_info.exchange_id.toUpperCase()} - ${s.exchange_info.mode.toUpperCase()}`;
+      }
+
+      // 11. Perpetual Futures 8-Hour Funding Rate Guard
+      if (s.funding_guard) {
+        const fg = s.funding_guard;
+        const fCount = document.getElementById('fundingCountdown');
+        if (fCount) fCount.innerText = `8h Funding: ${fg.countdown} (${fg.bias})`;
+        const vTime = document.getElementById('valNextFundingTime');
+        if (vTime) vTime.innerText = `${fg.next_snapshot_utc} UTC`;
+        const vCd = document.getElementById('valFundingCountdownText');
+        if (vCd) vCd.innerText = `Countdown: ${fg.countdown} (${fg.bias})`;
+      }
+
+      // 12. Persistent WebSocket Streamer Status
+      if (s.streamer_health) {
+        const sh = s.streamer_health;
+        const wsText = document.getElementById('wsStatusText');
+        const wsPill = document.getElementById('wsPill');
+        if (wsText && wsPill) {
+          if (sh.connected) {
+            wsText.innerText = `WS PUSH: CONNECTED (${sh.active_channels || 1} streams)`;
+            wsPill.style.background = '#f0fdf4';
+            wsPill.style.color = '#16a34a';
+            wsPill.style.borderColor = '#bbf7d0';
+          } else {
+            wsText.innerText = 'WS PUSH: RECONNECTING';
+            wsPill.style.background = '#fffbeb';
+            wsPill.style.color = '#d97706';
+            wsPill.style.borderColor = '#fde68a';
+          }
+        }
+      }
+
+      // Trigger candlestick render if on Terminal tab
+      if (currentTab === 'terminal') {
+        const nowMs = Date.now();
+        if (nowMs - lastChartFetchTime > 3000) {
+          loadCandleChart();
+        }
+      }
+
+      // 13. Options Intelligence Radar
+      if (s.options_radar && currentTab === 'options') {
+        renderOptionsRadar(s.options_radar);
+      }
+    }
+
+    // --- PIN Security Modal Functions ---
+    function togglePinVisibility() {
+      const pinInput = document.getElementById('inputMasterPin');
+      const eyeIcon = document.getElementById('pinEyeIcon');
+      if (!pinInput || !eyeIcon) return;
+      if (pinInput.type === 'password') {
+        pinInput.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+      } else {
+        pinInput.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+      }
+    }
+
+    function fillDefaultPin() {
+      const pinInput = document.getElementById('inputMasterPin');
+      const errBox = document.getElementById('pinErrorMessage');
+      if (pinInput) {
+        pinInput.value = '8888';
+        pinInput.focus();
+        pinInput.select();
+      }
+      if (errBox) errBox.style.display = 'none';
+    }
+
+    function triggerPinProtectedPower() {
+      // If authenticated session exists, execute directly
+      const token = sessionStorage.getItem('rim_pin_token');
+      if (token) {
+        toggleBotPower();
+        return;
+      }
+      // Show PIN authorization modal
+      const modal = document.getElementById('pinModal');
+      const pinInput = document.getElementById('inputMasterPin');
+      const errBox = document.getElementById('pinErrorMessage');
+      if (modal && pinInput) {
+        if (errBox) errBox.style.display = 'none';
+        pinInput.value = '8888'; // Auto-fill default PIN so 1-click authorize works instantly
+        modal.classList.add('show');
+        setTimeout(() => {
+          pinInput.focus();
+          pinInput.select();
+        }, 100);
+      }
+    }
+
+    function closePinModal() {
+      const modal = document.getElementById('pinModal');
+      if (modal) modal.classList.remove('show');
+    }
+
+    async function submitMasterPin() {
+      const pinInput = document.getElementById('inputMasterPin');
+      const errBox = document.getElementById('pinErrorMessage');
+      const errText = document.getElementById('pinErrorText');
+      const pin = pinInput.value.trim();
+      if (!pin) {
+        if (errBox && errText) {
+          errText.innerText = 'Please enter a PIN (default is 8888).';
+          errBox.style.display = 'block';
+        }
+        return;
+      }
+      try {
+        const res = await fetch('/api/auth/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin: pin })
+        });
+        const data = await res.json();
+        if (data.success && data.token) {
+          sessionStorage.setItem('rim_pin_token', data.token);
+          closePinModal();
+          toggleBotPower();
+        } else {
+          if (errBox && errText) {
+            errText.innerText = data.message || 'Invalid Master PIN. Access denied.';
+            errBox.style.display = 'block';
+          }
+        }
+      } catch (err) {
+        if (errBox && errText) {
+          errText.innerText = 'Network error during PIN verification.';
+          errBox.style.display = 'block';
+        }
+      }
+    }
+
+    async function updateMasterPin() {
+      const oldPin = document.getElementById('cfgOldPin').value.trim();
+      const newPin = document.getElementById('cfgNewPin').value.trim();
+      const fb = document.getElementById('vaultFeedbackText');
+      if (!oldPin || !newPin) {
+        fb.style.color = 'var(--loss-red)';
+        fb.innerText = 'Please provide both current and new PIN.';
+        return;
+      }
+      try {
+        const res = await fetch('/api/auth/pin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ old_pin: oldPin, new_pin: newPin })
+        });
+        const data = await res.json();
+        if (data.success) {
+          fb.style.color = 'var(--profit-green)';
+          fb.innerText = 'Master PIN updated successfully in Security Vault!';
+          document.getElementById('cfgOldPin').value = '';
+          document.getElementById('cfgNewPin').value = '';
+        } else {
+          fb.style.color = 'var(--loss-red)';
+          fb.innerText = data.message || 'PIN update failed.';
+        }
+      } catch (err) {
+        fb.style.color = 'var(--loss-red)';
+        fb.innerText = 'Error updating PIN.';
+      }
+    }
+
+    // --- Notifier & Alerting Functions ---
+    async function saveNotifierConfig() {
+      const tgToken = document.getElementById('cfgTelegramToken').value.trim();
+      const tgChat = document.getElementById('cfgTelegramChatId').value.trim();
+      const discord = document.getElementById('cfgDiscordWebhook').value.trim();
+      const fb = document.getElementById('notifierFeedbackText');
+      fb.style.color = 'var(--accent-primary)';
+      fb.innerText = 'Saving notification settings...';
+
+      try {
+        const res = await fetch('/api/notifier/configure', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            telegram_token: tgToken,
+            telegram_chat_id: tgChat,
+            discord_webhook: discord,
+            enabled: true
+          })
+        });
+        const data = await res.json();
+        fb.style.color = 'var(--profit-green)';
+        fb.innerText = 'Notification channels saved & active!';
+      } catch (err) {
+        fb.style.color = 'var(--loss-red)';
+        fb.innerText = 'Error saving notification channels.';
+      }
+    }
+
+    async function sendTestAlertPing() {
+      const fb = document.getElementById('notifierFeedbackText');
+      fb.style.color = 'var(--accent-primary)';
+      fb.innerText = 'Dispatching test alert...';
+      try {
+        const res = await fetch('/api/notifier/test', { method: 'POST' });
+        const data = await res.json();
+        fb.style.color = 'var(--profit-green)';
+        fb.innerText = 'Test alert dispatched to configured phone/channels!';
+      } catch (err) {
+        fb.style.color = 'var(--loss-red)';
+        fb.innerText = 'Failed to dispatch test alert.';
+      }
+    }
+
+    // --- High-Performance Candlestick Canvas Renderer ---
+    let lastChartFetchTime = 0;
+    let isChartFetching = false;
+
+    async function loadCandleChart() {
+      if (isChartFetching) return;
+      isChartFetching = true;
+      lastChartFetchTime = Date.now();
+      const symSelect = document.getElementById('chartSymbolSelect');
+      const sym = symSelect ? symSelect.value : 'BTC/USDT';
+      try {
+        const res = await fetch(`/api/chart/candles?symbol=${encodeURIComponent(sym)}&limit=30`);
+        const data = await res.json();
+        if (data && data.candles && data.candles.length > 0) {
+          drawCandlesticks(data.candles, data.symbol);
+        }
+      } catch (err) {
+        console.error('Candlestick load error:', err);
+      } finally {
+        isChartFetching = false;
+      }
+    }
+
+    function drawCandlesticks(candles, symbol) {
+      const canvas = document.getElementById('candleCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+
+      // Handle retina resolution
+      if (canvas.width !== rect.width * dpr || canvas.height !== rect.height * dpr) {
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+      }
+      ctx.save();
+      ctx.scale(dpr, dpr);
+
+      const width = rect.width;
+      const height = rect.height;
+      ctx.clearRect(0, 0, width, height);
+
+      // Candles: [timestamp, open, high, low, close, volume]
+      let minP = Infinity;
+      let maxP = -Infinity;
+      let maxVol = 0;
+
+      candles.forEach(c => {
+        if (c[2] > maxP) maxP = c[2];
+        if (c[3] < minP) minP = c[3];
+        if (c[5] > maxVol) maxVol = c[5];
+      });
+
+      // Price headroom padding
+      const pRange = (maxP - minP) || 1.0;
+      const padTop = height * 0.1;
+      const padBottom = height * 0.25;
+      const chartH = height - padTop - padBottom;
+
+      const numCandles = candles.length;
+      const candleW = Math.max(3, (width - 60) / numCandles);
+      const spacing = candleW * 0.25;
+      const bodyW = Math.max(2, candleW - spacing);
+
+      // Draw Grid Lines
+      ctx.strokeStyle = '#f1f5f9';
+      ctx.lineWidth = 1;
+      for (let i = 1; i <= 3; i++) {
+        const y = padTop + (chartH * (i / 4));
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width - 55, y);
+        ctx.stroke();
+      }
+
+      // Draw Candles & Volumes
+      candles.forEach((c, idx) => {
+        const [t, o, h, l, close, vol] = c;
+        const isUp = close >= o;
+        const color = isUp ? '#16a34a' : '#dc2626';
+
+        const xCenter = (idx * candleW) + (candleW / 2) + 5;
+        const xBody = xCenter - (bodyW / 2);
+
+        const yHigh = padTop + ((maxP - h) / pRange) * chartH;
+        const yLow = padTop + ((maxP - l) / pRange) * chartH;
+        const yOpen = padTop + ((maxP - o) / pRange) * chartH;
+        const yClose = padTop + ((maxP - close) / pRange) * chartH;
+
+        // 1. Draw Volume Bar (Lower 20%)
+        if (maxVol > 0) {
+          const volH = (vol / maxVol) * (height * 0.2);
+          const yVol = height - volH - 2;
+          ctx.fillStyle = isUp ? 'rgba(22, 163, 74, 0.25)' : 'rgba(220, 38, 38, 0.25)';
+          ctx.fillRect(xBody, yVol, bodyW, volH);
+        }
+
+        // 2. Draw Wick
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(xCenter, yHigh);
+        ctx.lineTo(xCenter, yLow);
+        ctx.stroke();
+
+        // 3. Draw Body
+        ctx.fillStyle = color;
+        const bodyTop = Math.min(yOpen, yClose);
+        const bodyHeight = Math.max(1.5, Math.abs(yClose - yOpen));
+        ctx.fillRect(xBody, bodyTop, bodyW, bodyHeight);
+      });
+
+      // Draw Last Price Reference Line
+      const lastCandle = candles[candles.length - 1];
+      const lastPrice = lastCandle[4];
+      const lastY = padTop + ((maxP - lastPrice) / pRange) * chartH;
+
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(0, lastY);
+      ctx.lineTo(width - 55, lastY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Draw Price Axis Label
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(width - 55, lastY - 9, 52, 18);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(lastPrice >= 1 ? lastPrice.toFixed(2) : lastPrice.toFixed(4), width - 29, lastY + 3);
+
+      ctx.restore();
+
+      // Update Summary Text
+      const summaryEl = document.getElementById('chartPriceSummary');
+      if (summaryEl) {
+        summaryEl.innerHTML = `<strong>${symbol}</strong>: $${lastPrice >= 1 ? lastPrice.toFixed(4) : lastPrice.toFixed(6)} | Range: $${minP.toFixed(2)} - $${maxP.toFixed(2)}`;
+      }
+    }
+
+    // --- Crypto Options & Deribit Engine Functions ---
+    async function loadOptionsChainData() {
+      const curSelect = document.getElementById('optCurrencySelect');
+      const cur = curSelect ? curSelect.value : 'BTC';
+      try {
+        const res = await fetch(`/api/options/chain?currency=${cur}`);
+        const data = await res.json();
+        if (data) {
+          renderOptionsRadar(data);
+        }
+      } catch (err) {
+        console.error('Options chain fetch error:', err);
+      }
+    }
+
+    function renderOptionsRadar(data) {
+      if (!data) return;
+      const spotEl = document.getElementById('valOptSpot');
+      if (spotEl && data.spot_price) {
+        spotEl.innerText = `$${data.spot_price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      }
+      const mpEl = document.getElementById('valOptMaxPain');
+      if (mpEl && data.max_pain_strike) {
+        mpEl.innerText = `$${data.max_pain_strike.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+      }
+      
+      const distEl = document.getElementById('valOptDistPain');
+      if (distEl) {
+        const distVal = data.dist_to_max_pain_pct || 0;
+        distEl.innerText = `Gravity Pull: ${distVal >= 0 ? '+' : ''}${distVal}% (Toward Pin)`;
+        distEl.style.color = distVal >= 0 ? 'var(--profit-green)' : 'var(--loss-red)';
+      }
+
+      const pcrEl = document.getElementById('valOptPcr');
+      if (pcrEl) {
+        pcrEl.innerText = (data.put_call_ratio_oi || 0.95).toFixed(3);
+      }
+      const pcrTextEl = document.getElementById('valOptPcrText');
+      if (pcrTextEl && data.pcr_bias) {
+        pcrTextEl.innerText = data.pcr_bias;
+      }
+
+      const pcrBadge = document.getElementById('optPcrStatusBadge');
+      if (pcrBadge) {
+        const shortBias = data.pcr_bias ? data.pcr_bias.split(' ')[0] : 'BALANCED';
+        pcrBadge.innerText = `PCR: ${(data.put_call_ratio_oi || 0.95).toFixed(2)} (${shortBias})`;
+      }
+
+      const recStrat = document.getElementById('valOptRecStrategy');
+      if (recStrat && data.recommended_strategy) {
+        recStrat.innerText = data.recommended_strategy;
+      }
+      const recRat = document.getElementById('valOptRecRationale');
+      if (recRat && data.strategy_rationale) {
+        recRat.innerText = data.strategy_rationale;
+      }
+      
+      const stratBadge = document.getElementById('optStrategyBadge');
+      if (stratBadge && data.recommended_strategy) {
+        stratBadge.innerText = data.recommended_strategy.split('/')[0].trim();
+      }
+
+      // Render Options Chain Matrix Table
+      const chainTable = document.getElementById('optChainTable');
+      if (chainTable && data.calls_sample && data.puts_sample) {
+        let rowsHtml = '';
+        const calls = data.calls_sample;
+        const puts = data.puts_sample;
+        const count = Math.max(calls.length, puts.length);
+        
+        for (let i = 0; i < count; i++) {
+          const c = calls[i] || {};
+          const p = puts[i] || {};
+          const strike = c.strike || p.strike || 0;
+          const isAtm = Math.abs(strike - (data.spot_price || 68000)) <= 1500;
+          const strikeBg = isAtm ? '#fef3c7' : '#f8fafc';
+
+          rowsHtml += `
+            <tr style="background: ${isAtm ? '#fffbeb' : 'inherit'};">
+              <td style="color: #15803d; font-weight: 700;">$${(c.premium_usd || 0).toLocaleString()}</td>
+              <td style="color: var(--accent-primary); font-family: monospace;">${c.delta !== undefined ? (c.delta >= 0 ? '+' : '') + c.delta.toFixed(3) : '-'}</td>
+              <td style="color: var(--loss-red); font-size: 0.74rem;">${c.theta_daily ? '-$' + Math.abs(c.theta_daily).toFixed(1) : '-'}</td>
+              <td style="border-right: 1px solid var(--border-color); font-size: 0.74rem;">${(c.open_interest || 0).toFixed(0)}</td>
+              
+              <td style="text-align: center; font-weight: 800; background: ${strikeBg}; color: var(--text-main); font-size: 0.85rem;">
+                $${strike.toLocaleString()} ${isAtm ? '<span style="font-size: 0.65rem; color: #b45309;">(ATM)</span>' : ''}
+              </td>
+              
+              <td style="border-left: 1px solid var(--border-color); color: #b91c1c; font-weight: 700;">$${(p.premium_usd || 0).toLocaleString()}</td>
+              <td style="color: var(--loss-red); font-family: monospace;">${p.delta !== undefined ? p.delta.toFixed(3) : '-'}</td>
+              <td style="color: var(--loss-red); font-size: 0.74rem;">${p.theta_daily ? '-$' + Math.abs(p.theta_daily).toFixed(1) : '-'}</td>
+              <td style="font-size: 0.74rem;">${(p.open_interest || 0).toFixed(0)}</td>
+            </tr>
+          `;
+        }
+        chainTable.innerHTML = rowsHtml;
+      }
+    }
+
+    // --- Client-side Black-Scholes Analytical Greeks Calculator ---
+    function bsNormCdf(x) {
+      const b1 = 0.319381530;
+      const b2 = -0.356563782;
+      const b3 = 1.781477937;
+      const b4 = -1.821255978;
+      const b5 = 1.330274429;
+      const p = 0.2316419;
+      const c = 0.3989422804014327;
+      if (x >= 0.0) {
+        const t = 1.0 / (1.0 + p * x);
+        return 1.0 - c * Math.exp(-x * x / 2.0) * t * (t * (t * (t * (t * b5 + b4) + b3) + b2) + b1);
+      } else {
+        const t = 1.0 / (1.0 - p * x);
+        return c * Math.exp(-x * x / 2.0) * t * (t * (t * (t * (t * b5 + b4) + b3) + b2) + b1);
+      }
+    }
+
+    function bsNormPdf(x) {
+      return (1.0 / Math.sqrt(2.0 * Math.PI)) * Math.exp(-0.5 * x * x);
+    }
+
+    function recalculateGreeks() {
+      const spotEl = document.getElementById('calcSpot');
+      if (!spotEl) return;
+      const spot = parseFloat(spotEl.value) || 68000;
+      const strike = parseFloat(document.getElementById('calcStrike').value) || 70000;
+      const dte = Math.max(0.01, parseFloat(document.getElementById('calcDte').value) || 7);
+      const iv = Math.max(1, parseFloat(document.getElementById('calcIv').value) || 55);
+      const r = 0.045;
+
+      const T = Math.max(dte / 365.0, 1e-5);
+      const sigma = Math.max(iv / 100.0, 1e-4);
+
+      const d1 = (Math.log(spot / strike) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+      const d2 = d1 - sigma * Math.sqrt(T);
+
+      const pdfD1 = bsNormPdf(d1);
+      const cdfD1 = bsNormCdf(d1);
+      const cdfD2 = bsNormCdf(d2);
+
+      const callPrem = Math.max(0, spot * cdfD1 - strike * Math.exp(-r * T) * cdfD2);
+      const putPrem = Math.max(0, strike * Math.exp(-r * T) * bsNormCdf(-d2) - spot * bsNormCdf(-d1));
+
+      const delta = cdfD1;
+      const putDelta = delta - 1.0;
+      const gamma = pdfD1 / (spot * sigma * Math.sqrt(T));
+      const vega = (spot * Math.sqrt(T) * pdfD1) / 100.0;
+      
+      const thetaAnnual = -(spot * pdfD1 * sigma) / (2.0 * Math.sqrt(T)) - r * strike * Math.exp(-r * T) * cdfD2;
+      const thetaDaily = thetaAnnual / 365.0;
+
+      document.getElementById('calcCallPrem').innerText = `$${callPrem.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('calcPutPrem').innerText = `$${putPrem.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('calcCallBe').innerText = (strike + callPrem).toLocaleString('en-US', {maximumFractionDigits: 0});
+      document.getElementById('calcPutBe').innerText = Math.max(0, strike - putPrem).toLocaleString('en-US', {maximumFractionDigits: 0});
+
+      document.getElementById('calcDelta').innerText = (delta >= 0 ? '+' : '') + delta.toFixed(4);
+      document.getElementById('calcPutDelta').innerText = putDelta.toFixed(4);
+      document.getElementById('calcGamma').innerText = gamma.toFixed(6);
+      document.getElementById('calcTheta').innerText = `-$${Math.abs(thetaDaily).toFixed(2)} / day`;
+      document.getElementById('calcVega').innerText = `+$${vega.toFixed(2)}`;
+    }
+
+    // Start auto-poll every 1.5 seconds
+    setInterval(pollState, 1500);
+    window.onload = () => {
+      pollState();
+      loadCandleChart();
+      loadOptionsChainData();
+      recalculateGreeks();
+    };
+  </script>
+
+  <!-- Master PIN Authorization Modal -->
+  <div id="pinModal" class="modal-backdrop">
+    <div class="modal-box">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+        <div style="width: 38px; height: 38px; border-radius: 8px; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <div>
+          <h3 style="font-size: 1rem; font-weight: 800; color: var(--text-main);">Master Security Authorization</h3>
+          <p style="font-size: 0.72rem; color: var(--text-muted);">Enter Master PIN to toggle Autonomous Execution</p>
+        </div>
+      </div>
+      
+      <div style="margin: 16px 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <label style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 700;">MASTER SECURITY PIN</label>
+          <button type="button" onclick="fillDefaultPin()" style="background: none; border: none; color: var(--accent-primary); font-size: 0.72rem; font-weight: 700; cursor: pointer; text-decoration: underline;">
+            Use Default (8888)
+          </button>
+        </div>
+
+        <div style="position: relative; display: flex; align-items: center;">
+          <input type="password" id="inputMasterPin" maxlength="8" placeholder="Enter PIN" value="8888" style="width: 100%; font-size: 1.25rem; text-align: center; letter-spacing: 6px; padding: 10px 42px 10px 10px; font-weight: 700;" onkeydown="if(event.key==='Enter') submitMasterPin()" oninput="document.getElementById('pinErrorMessage').style.display='none'">
+          <button type="button" onclick="togglePinVisibility()" title="Show/Hide PIN" style="position: absolute; right: 10px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; padding: 6px;">
+            <i id="pinEyeIcon" class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+        
+        <div id="pinErrorMessage" style="display: none; color: var(--loss-red); font-size: 0.75rem; margin-top: 8px; font-weight: 700; background: #fef2f2; border: 1px solid #fecaca; padding: 6px 10px; border-radius: 6px;">
+          <i class="fa-solid fa-triangle-exclamation"></i> <span id="pinErrorText">Invalid PIN. Access denied.</span>
+        </div>
+        
+        <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 6px;">
+          Default factory PIN is <strong>8888</strong>. Can be changed anytime under <strong>Exchange API Setup &gt; Security Vault</strong>.
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px; justify-content: flex-end;">
+        <button class="btn-action" style="background: #e2e8f0; color: var(--text-secondary); border-color: #cbd5e1;" onclick="closePinModal()">Cancel</button>
+        <button class="btn-action" style="background: #0284c7;" onclick="submitMasterPin()">
+          <i class="fa-solid fa-shield-halved"></i> Authorize & Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

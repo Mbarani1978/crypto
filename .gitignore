@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.rimdb*
+*.db
+*.sqlite3
+.vault_store
+logs/
+*.log
+.env
